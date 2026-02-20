@@ -1,5 +1,5 @@
 {
-    "buildCommand": "bun install && bun build ./src/frontend/index.html --outdir ./dist",
+    "buildCommand": "bun install && bun build ./src/frontend/index.html --outdir ./dist && cp -r src/frontend/images dist/images",
     "outputDirectory": "dist",
     "installCommand": "curl -fsSL https://bun.sh/install | bash && export PATH=\"$HOME/.bun/bin:$PATH\" && bun install",
     "framework": null
