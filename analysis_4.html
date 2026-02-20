@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nivå - Apple Pay Checkout</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#16169c",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "1.5rem", // 24px
+                        "full": "9999px"
+                    ,},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .apple-pay-logo {
+            height: 20px;
+            width: auto;
+        }
+        .face-id-glow {
+            box-shadow: 0 0 20px rgba(22, 22, 156, 0.15);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111117]">
+<!-- Main Container (Phone Mockup Frame) -->
+<div class="relative flex h-screen w-full flex-col bg-white overflow-hidden max-w-md mx-auto shadow-2xl">
+<!-- Background: Teaser Screen (The "Ny analys" state) -->
+<div class="flex flex-col h-full w-full">
+<!-- Top Bar -->
+<div class="flex items-center bg-white p-4 pb-2 justify-between">
+<div class="text-[#111117] flex size-12 shrink-0 items-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-[#111117] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Ny analys</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex items-center justify-center rounded-xl h-12 bg-transparent text-[#111117]">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+</div>
+<!-- Property Card -->
+<div class="p-4 @container">
+<div class="flex flex-col items-stretch justify-start rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.05)] bg-white overflow-hidden border border-gray-100">
+<div class="w-full aspect-video bg-cover bg-center" data-alt="Modern high-end apartment building exterior in Stockholm" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBYMCXWXM_Lzx-ghTLcGrzhzSbkazqvzIVbIugjxpIhd7_ucKdXKDPobOoO-HusyvUsI0sJlO09G3NdxuY_KLKWX4i5b95iiZA9ZDDsYegZgk6OM4CQyPOsGJKblrpIlY6aMe4DnHmtN5KjirOyBJAFOIKWSxUWjJ4svS1B7DBhdb9gFKRh0b79t4VWzfgR60i4KestrN7qJHolIEeWQgnQnZjjVv9zxtQjY3L3DeZTXfWt9G_rxA40qIE7Nw_3sOngIlRmb5ZTOQ");'>
+</div>
+<div class="flex w-full flex-col gap-1 py-5 px-5">
+<p class="text-[#111117] text-xl font-bold leading-tight tracking-tight">Sibyllegatan 14</p>
+<div class="flex flex-col gap-0.5">
+<p class="text-gray-500 text-sm font-medium">Östermalm, Stockholm</p>
+<p class="text-gray-400 text-sm">Premium-analys för fastighetsvärdering</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Content Placeholder for context -->
+<div class="px-4 py-2">
+<div class="h-24 w-full bg-gray-50 rounded-lg border border-dashed border-gray-200 flex items-center justify-center">
+<p class="text-gray-400 text-xs uppercase tracking-widest font-semibold">Fastighetsdata laddas...</p>
+</div>
+</div>
+</div>
+<!-- Semi-transparent Overlay (60% dark) -->
+<div class="absolute inset-0 bg-black/60 z-10"></div>
+<!-- Foreground: Apple Pay Bottom Sheet -->
+<div class="absolute inset-x-0 bottom-0 z-20 transition-transform duration-300 transform translate-y-0">
+<!-- Sheet Handle (Visual indicator) -->
+<div class="flex justify-center mb-2">
+<div class="h-1.5 w-10 bg-white/40 rounded-full"></div>
+</div>
+<!-- Main White Sheet -->
+<div class="bg-white rounded-t-[24px] px-6 pt-6 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+<!-- Apple Pay Header -->
+<div class="flex justify-center mb-8">
+<!-- Placeholder SVG for Apple Pay Logo -->
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-black text-2xl" style="font-variation-settings: 'FILL' 1">ios</span>
+<span class="font-semibold text-xl tracking-tight text-black">Pay</span>
+</div>
+</div>
+<!-- Transaction Details -->
+<div class="space-y-4">
+<!-- Analys Row -->
+<div class="flex justify-between items-start border-b border-gray-100 pb-4">
+<div class="flex flex-col">
+<span class="text-xs uppercase font-bold text-gray-400 tracking-wider">Köp</span>
+<span class="text-[15px] font-medium text-[#111117]">Analys: Sibyllegatan 14</span>
+</div>
+<span class="text-[15px] font-medium text-[#111117]">99,00 kr</span>
+</div>
+<!-- Payment Method Row -->
+<div class="flex justify-between items-center border-b border-gray-100 pb-4">
+<div class="flex flex-col">
+<span class="text-xs uppercase font-bold text-gray-400 tracking-wider">Betalningsmetod</span>
+<div class="flex items-center gap-2 mt-0.5">
+<div class="w-8 h-5 bg-black rounded-sm flex items-center justify-center">
+<div class="w-3 h-3 border border-white/20 rounded-full"></div>
+</div>
+<span class="text-[15px] font-medium text-[#111117]">Visa •••• 1234</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-gray-300">chevron_right</span>
+</div>
+<!-- Contact Row -->
+<div class="flex justify-between items-center border-b border-gray-100 pb-4">
+<div class="flex flex-col">
+<span class="text-xs uppercase font-bold text-gray-400 tracking-wider">Kontakt</span>
+<span class="text-[15px] font-medium text-[#111117]">epost@exempel.se</span>
+</div>
+<span class="material-symbols-outlined text-gray-300">chevron_right</span>
+</div>
+<!-- Total Row -->
+<div class="flex justify-between items-center pt-2 pb-8">
+<span class="text-lg font-bold text-[#111117]">TOTALT</span>
+<span class="text-2xl font-bold text-[#111117]">99,00 kr</span>
+</div>
+</div>
+<!-- Auth/Confirmation Zone -->
+<div class="flex flex-col items-center gap-4 mt-4">
+<div class="flex flex-col items-center justify-center">
+<div class="size-16 rounded-2xl bg-primary/5 flex items-center justify-center mb-3 face-id-glow">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'wght' 200">face</span>
+</div>
+<p class="text-[15px] font-medium text-[#111117]">Bekräfta med FaceID</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Instructional Overlay (Double Click To Pay) -->
+<div class="absolute right-0 top-1/3 z-30 flex items-center gap-2 pr-1 pointer-events-none">
+<div class="bg-black/80 text-white text-[11px] font-bold px-3 py-2 rounded-lg flex flex-col items-end">
+<span>DUBBELKLICKA</span>
+<span class="opacity-70">FÖR ATT BETALA</span>
+</div>
+<div class="w-1.5 h-16 bg-white/40 rounded-l-md"></div>
+</div>
+<!-- iOS Status Bar Placeholder -->
+<div class="absolute top-0 w-full h-11 flex justify-between items-end px-8 z-40 pointer-events-none">
+<span class="text-xs font-bold text-black">9:41</span>
+<div class="flex gap-1.5 mb-1">
+<span class="material-symbols-outlined text-[14px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[14px]">wifi</span>
+<span class="material-symbols-outlined text-[14px]">battery_full_alt</span>
+</div>
+</div>
+<!-- iOS Home Indicator -->
+<div class="absolute bottom-2 inset-x-0 flex justify-center z-50 pointer-events-none">
+<div class="h-1.5 w-32 bg-black/10 rounded-full"></div>
+</div>
+</div>
+</body></html>

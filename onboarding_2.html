@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nivå Onboarding: Sparkapital</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#000000",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#121212",
+                        "border-light": "#E5E5E5",
+                        "border-dark": "#333333",
+                        "text-main": "#000000",
+                        "text-muted": "#A6A6A6",
+                        "wireframe-gray": "#F2F2F2",
+                        "mid-gray": "#A6A6A6",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "ios": "16px"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-white min-h-screen flex justify-center">
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
+<div class="h-12 w-full bg-background-light dark:bg-background-dark flex items-end justify-between px-6 pb-2 text-xs font-medium z-10">
+<span>9:41</span>
+<div class="flex items-center gap-1.5">
+<span class="material-icons-outlined text-[16px]">signal_cellular_alt</span>
+<span class="material-icons-outlined text-[16px]">wifi</span>
+<span class="material-icons-outlined text-[18px]">battery_full</span>
+</div>
+</div>
+<header class="px-5 py-4 flex items-center z-10">
+<button class="p-2 -ml-2 hover:bg-wireframe-gray dark:hover:bg-surface-dark rounded-full transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+</button>
+<div class="flex-1 flex justify-center pr-8">
+<div class="flex gap-1.5">
+<div class="h-1.5 w-6 rounded-full bg-border-light dark:bg-border-dark"></div>
+<div class="h-1.5 w-6 rounded-full bg-black dark:bg-white"></div>
+<div class="h-1.5 w-6 rounded-full bg-border-light dark:bg-border-dark"></div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col px-8 pt-8 pb-10">
+<div class="mb-12">
+<h1 class="text-3xl font-bold tracking-tight text-black dark:text-white mb-4">Din kontantinsats</h1>
+<p class="text-lg text-text-muted leading-snug">Hur mycket kapital har du tillgängligt för bostadsköpet?</p>
+</div>
+<div class="flex-1">
+<div class="space-y-4">
+<label class="block text-xs font-bold uppercase tracking-widest text-text-muted" for="capital">
+                        Totalt sparande
+                    </label>
+<div class="relative group">
+<input class="w-full bg-transparent border-b-2 border-border-light dark:border-border-dark focus:border-black dark:focus:border-white transition-colors py-4 text-3xl font-bold placeholder:text-wireframe-gray focus:outline-none focus:ring-0 px-0" id="capital" placeholder="1.500.000 kr" type="text"/>
+</div>
+<p class="text-sm text-text-muted leading-relaxed">
+                        Detta sätter standardvärdet för din kontantinsats i framtida kalkyler.
+                    </p>
+</div>
+</div>
+<footer class="mt-auto">
+<button class="w-full bg-black dark:bg-white text-white dark:text-black font-semibold py-5 rounded-ios transition-all active:scale-[0.98] shadow-lg shadow-black/5">
+                    Nästa
+                </button>
+<div class="mt-6 flex justify-center">
+<div class="h-1 w-32 bg-black/10 dark:bg-white/10 rounded-full"></div>
+</div>
+</footer>
+</main>
+</div>
+
+</body></html>

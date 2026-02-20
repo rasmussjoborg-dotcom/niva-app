@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html class="light" lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nivå Analysis - Initial Empty State Unified</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "background-light": "#f8f8f8",
+                        "neutral-border": "#eeeeee",
+                        "neutral-muted": "#8e8e93",
+                        "neutral-soft": "#f2f2f7"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "ios": "16px",
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-[#f8f8f8] font-display text-black antialiased;
+                -webkit-tap-highlight-color: transparent;
+            }
+        }
+        .premium-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .ios-indicator {
+            width: 134px;
+            height: 5px;
+            background-color: #000000;
+            border-radius: 100px;
+            opacity: 0.1;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex justify-center items-center">
+<div class="w-full max-w-[430px] h-[932px] bg-white relative flex flex-col overflow-hidden shadow-2xl border border-gray-100">
+<nav class="sticky top-0 z-50 bg-white/80 premium-blur px-5 h-[64px] flex items-center justify-between border-b border-gray-100">
+<button class="w-10 h-10 flex items-center justify-start text-black">
+<span class="material-symbols-outlined text-[28px]">chevron_left</span>
+</button>
+<h1 class="text-[12px] font-bold tracking-[0.2em] uppercase text-black">Ny analys</h1>
+<div class="w-10"></div>
+</nav>
+<main class="flex-1 overflow-y-auto hide-scrollbar px-5 pt-6 pb-40 space-y-6">
+<section class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-gray-400 px-1" for="property-link">Bostadens länk</label>
+<div class="relative group">
+<input class="w-full h-[58px] bg-[#f2f2f7] border-none rounded-ios px-5 pr-14 text-[15px] placeholder:text-gray-400 focus:ring-1 focus:ring-black outline-none transition-all" id="property-link" placeholder="Klistra in länk från Hemnet, Booli..." type="text"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-400">
+<span class="material-symbols-outlined text-[22px]">content_paste</span>
+</button>
+</div>
+</section>
+<section>
+<div class="w-full aspect-[16/10] bg-white border-2 border-dashed border-gray-200 rounded-ios flex flex-col items-center justify-center p-6 text-center space-y-4">
+<div class="w-12 h-12 bg-[#f2f2f7] rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-[24px]">link</span>
+</div>
+<div class="space-y-1">
+<h3 class="text-[15px] font-semibold text-black">Identifiera bostad</h3>
+<p class="text-[13px] text-gray-400 leading-snug max-w-[240px] mx-auto">
+                            Klistra in en länk ovan för att hämta bilder, pris och dokument automatiskt.
+                        </p>
+</div>
+</div>
+</section>
+<section class="bg-[#f2f2f7] rounded-ios p-5 space-y-5 opacity-50 grayscale">
+<div class="flex items-center justify-between">
+<h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-500">Lås upp fullständig analys</h2>
+<div class="flex items-baseline gap-0.5">
+<span class="text-[17px] font-bold text-black">99</span>
+<span class="text-[10px] font-bold text-gray-500 uppercase">kr</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-ios bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">verified_user</span>
+</div>
+<div>
+<p class="text-[14px] font-medium text-black">Ekonomisk Trygghet</p>
+<p class="text-[11px] text-gray-400 uppercase tracking-wider">Föreningens ekonomi</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-ios bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">query_stats</span>
+</div>
+<div>
+<p class="text-[14px] font-medium text-black">Stress-testa kalkyl</p>
+<p class="text-[11px] text-gray-400 uppercase tracking-wider">Räntekänslighet</p>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-ios bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">smart_toy</span>
+</div>
+<div>
+<p class="text-[14px] font-medium text-black">AI-support</p>
+<p class="text-[11px] text-gray-400 uppercase tracking-wider">Obegränsade svar</p>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-center gap-6 pt-4 border-t border-gray-200/50">
+<div class="h-3 w-10 bg-gray-300 rounded-sm"></div>
+<div class="h-3 w-10 bg-gray-300 rounded-sm"></div>
+<div class="h-3 w-10 bg-gray-300 rounded-sm"></div>
+</div>
+</section>
+</main>
+<div class="absolute bottom-0 left-0 right-0 z-50">
+<div class="px-5 pb-4 pt-10 bg-gradient-to-t from-white via-white/100 to-transparent">
+<button class="w-full h-[58px] bg-[#f2f2f7] text-gray-400 font-bold text-[15px] rounded-ios flex items-center justify-center gap-3 cursor-not-allowed border border-gray-100 transition-all" disabled="">
+<span class="material-symbols-outlined text-[22px]">cloud_download</span>
+<span>Hämta bostadsdata</span>
+</button>
+</div>
+<div class="bg-white/80 premium-blur border-t border-gray-100 px-6 pt-3 pb-8 flex items-center justify-between">
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[24px] text-gray-400">home</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter text-gray-400">Hem</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[24px] text-black">search</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter text-black">Sök</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[24px] text-gray-400">bookmark</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter text-gray-400">Sparat</span>
+</div>
+<div class="flex flex-col items-center gap-1">
+<span class="material-symbols-outlined text-[24px] text-gray-400">person</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter text-gray-400">Profil</span>
+</div>
+</div>
+<div class="bg-white pb-2 flex justify-center">
+<div class="ios-indicator"></div>
+</div>
+</div>
+<div class="absolute -z-10 inset-0 opacity-[0.03] pointer-events-none">
+<img alt="Background Pattern" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnihQNcXOG-3bcONVOba9JKQ0G81CH64XwOfcRMPD8eGP2atuGtPwIrc0SHi-Ym7yymHhKDLcD5q667Z05x7-kB0VrzP3qjl_Sm8JIrcSuYhvXnu57qMBBH1jRpIQlPPQZO0a9KcrBWtkm-iDwh-ggBWeRZr3DAoqRrl2_VfnH9CDyH3S6QVzxpOPSxCHOvJUIPTrlmlxzLKrIVrg3-mofL4mba8gpDhpsu6gmmO_DvwACiQX4N4b4CWCaON5VkjhJUv-4SLfEkw"/>
+</div>
+</div>
+
+</body></html>

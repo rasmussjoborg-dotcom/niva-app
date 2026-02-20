@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nivå Home Screen Unified</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "white": "#FFFFFF",
+                        "black": "#000000",
+                        "light-gray": "#F2F2F2",
+                        "mid-gray": "#A6A6A6",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "Helvetica", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "nivå": "16px",
+                    },
+                    padding: {
+                        "nivå": "20px",
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-sans bg-white text-black antialiased;
+            }
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex justify-center">
+<div class="w-full max-w-md bg-white min-h-screen relative flex flex-col">
+<div class="h-12 w-full bg-white flex items-end justify-between px-6 pb-2 text-[13px] font-semibold z-20">
+<span>9:41</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[18px]">wifi</span>
+<span class="material-symbols-outlined text-[20px]">battery_full</span>
+</div>
+</div>
+<header class="px-nivå py-4 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur-sm z-20">
+<h1 class="text-2xl font-bold tracking-tight">Nivå</h1>
+<div class="h-10 w-10 rounded-nivå bg-light-gray overflow-hidden border border-light-gray flex items-center justify-center">
+<img alt="Profile" class="h-full w-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWzmKf6lHJw9jFDvZTe2EKWjI_yIbuHl08kvULqvVvsShnOBTiHhLStTiWAWEwUfkuUbQEym6VtQlWpfCYPOt1VYsJqBW8b17L4vSG69_jurg1DmOP8cIFsJJ0aI0re5a-tiVou1bWnfjIt4l0LxJzL3wCqeTSawheQWgUdLBKtwxxeMQxBBZUfQYd5hlZ7L3zH-RcYaY030cDlEP0jHZvmVyIcYyf0vGPo0ZkrMZYGma9GUl8gG0CPFc5Nw3BpeWj94EsvRWmTw"/>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-nivå pb-24 hide-scrollbar">
+<div class="mb-8">
+<div class="w-full bg-light-gray rounded-nivå p-nivå flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<h3 class="font-bold text-lg leading-tight">Ta nästa hem till en ny nivå</h3>
+<p class="text-mid-gray text-sm leading-relaxed">Få en komplett analys av ekonomi &amp; pris, sen dryftar du alla detaljer med objektets egen AI-expert.</p>
+</div>
+<button class="w-full bg-black text-white rounded-nivå py-4 text-sm font-bold flex items-center justify-center gap-2">
+                        Starta din analys
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<section class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="text-lg font-bold">Aktiva analyser</h2>
+<span class="text-xs font-bold text-mid-gray">3 ÖPPNA</span>
+</div>
+<div class="bg-white border border-light-gray rounded-nivå overflow-hidden">
+<div class="p-nivå pb-0 flex gap-4">
+<div class="w-20 h-20 bg-light-gray rounded-nivå flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWsG9MiwhJGxp4HTHx-inrevDYIRUdKvztRNTZeH_p0PdvovwU_0739E89bLWu6PvjgLzOixcMGjFVT6dBO_QmaUqWuzc1b6rPeghB7Aozj3tkFkPDPZS5x2vFso0yAiNc1rtzZpOrOdc9xl9Zm35YEcpscORMtp0mSlLoIFQJ6MyXLuq1IHdyn31ZegznQqaMUDSaYcUcwemd09-YqBz3E_EDGilJWfTaEAkVMTEiIz1lap_UWmaZYnY3SMkimjdN3LU8Zs7DAg"/>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<h3 class="font-bold text-base">Sibyllegatan 14</h3>
+<p class="text-sm text-mid-gray">Östermalm, Stockholm</p>
+<p class="text-[11px] font-bold mt-1 text-black">STARTPRIS 11.5M</p>
+</div>
+</div>
+<div class="p-nivå">
+<div class="grid grid-cols-3 gap-1 py-4 border-y border-light-gray mb-4">
+<div class="text-center">
+<p class="text-[10px] font-bold text-mid-gray mb-1 uppercase tracking-tight">Värdering</p>
+<p class="text-sm font-bold text-black">12-14M</p>
+</div>
+<div class="text-center border-x border-light-gray">
+<p class="text-[10px] font-bold text-mid-gray mb-1 uppercase tracking-tight">Brf</p>
+<p class="text-sm font-bold text-black">A++</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold text-mid-gray mb-1 uppercase tracking-tight">Marginal</p>
+<p class="text-sm font-bold text-black">+15k</p>
+</div>
+</div>
+<div class="bg-light-gray rounded-nivå p-4 mb-4">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-black text-lg">lock</span>
+<h4 class="text-sm font-bold uppercase tracking-tight">Lås upp fullständig analys</h4>
+</div>
+<div class="space-y-2 mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+<span class="text-[12px] font-medium">Djupgående BRF-analys</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">check_circle</span>
+<span class="text-[12px] font-medium">Framtida avgiftsprognos</span>
+</div>
+</div>
+<button class="w-full bg-white border border-black text-black rounded-nivå py-3 text-[13px] font-bold">
+                                Lås upp för 149 kr
+                            </button>
+</div>
+<button class="w-full bg-black text-white rounded-nivå py-4 text-sm font-bold flex items-center justify-center gap-2">
+                            Öppna assistent
+                            <span class="material-symbols-outlined text-sm">auto_awesome</span>
+</button>
+</div>
+</div>
+<div class="bg-white border border-light-gray rounded-nivå overflow-hidden opacity-60">
+<div class="p-nivå pb-0 flex gap-4">
+<div class="w-20 h-20 bg-light-gray rounded-nivå flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiw9AMPFjT0QoigVIwbVOIbd-vr9-KxTXxG7tX_c1BvFBeAtjcp1ndD_OMAS3DNPrxYhblPf5Rf1k91BgAfwSs2acJOk5uLY0VuzapTZbHCGjToU7Ok4gCQxzzWudNrBy6gDClhtHFFEJ7Edxsk-_iREKjbw_hbEf1uvvSQl8rYMYnSeClEVubcXuDNchxt3ptb_jWgJAioWN1d9hYzovtStwUJOQGpAahBPDhPOYZr82IfN9EeJ7GpbBuGsIPwNj_CEHZOAlnsA"/>
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<h3 class="font-bold text-base">Odengatan 23</h3>
+<p class="text-sm text-mid-gray">Vasastan, Stockholm</p>
+</div>
+</div>
+<div class="p-nivå">
+<div class="grid grid-cols-3 gap-1 py-4 border-y border-light-gray mb-4">
+<div class="text-center">
+<p class="text-[10px] font-bold text-mid-gray mb-1 uppercase tracking-tight">Värdering</p>
+<p class="text-sm font-bold text-black">8.1-8.6M</p>
+</div>
+<div class="text-center border-x border-light-gray">
+<p class="text-[10px] font-bold text-mid-gray mb-1 uppercase tracking-tight">Brf</p>
+<p class="text-sm font-bold text-black">B</p>
+</div>
+<div class="text-center">
+<p class="text-[10px] font-bold text-mid-gray mb-1 uppercase tracking-tight">Marginal</p>
+<p class="text-sm font-bold text-black">-2k</p>
+</div>
+</div>
+<button class="w-full bg-light-gray text-black rounded-nivå py-4 text-sm font-bold">
+                            Visa detaljer
+                        </button>
+</div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-light-gray px-nivå py-4 flex justify-around items-center z-30">
+<div class="flex flex-col items-center gap-1 text-black">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Hem</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-mid-gray">
+<span class="material-symbols-outlined">search</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Sök</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-mid-gray">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Sparat</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-mid-gray">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-tight">Profil</span>
+</div>
+</nav>
+</div>
+
+</body></html>

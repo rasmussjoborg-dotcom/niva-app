@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nivå Object Detail Unified v2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "niva-white": "#FFFFFF",
+                        "niva-black": "#000000",
+                        "niva-gray-light": "#F2F2F2",
+                        "niva-gray-medium": "#A6A6A6",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "niva": "16px",
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply bg-niva-white text-niva-black antialiased;
+            }
+        }
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #000000;
+            border: 1px solid #FFFFFF;
+            cursor: pointer;
+            margin-top: -8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 20;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #F2F2F2;
+            border-radius: 2px;
+        }
+        .small-caps-label {
+            font-variant: all-small-caps;
+            letter-spacing: 0.05em;
+            @apply text-niva-gray-medium font-semibold text-sm leading-[2.2];
+        }
+        .slider-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .active-track {
+            position: absolute;
+            height: 4px;
+            border-radius: 2px;
+            background-color: #000000;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .notch-marker {
+            @apply absolute top-[-4px] w-[1px] h-[12px] bg-niva-gray-medium pointer-events-none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<nav class="fixed top-0 w-full bg-niva-white/90 backdrop-blur-md z-50 border-b border-niva-gray-light">
+<div class="flex items-center justify-between px-5 h-16 max-w-md mx-auto">
+<button class="w-10 h-10 flex items-center justify-start rounded-full active:bg-niva-gray-light transition-colors">
+<span class="material-symbols-outlined text-niva-black">arrow_back</span>
+</button>
+<h1 class="text-[14px] font-bold tracking-tight text-center">Sibyllegatan 14</h1>
+<div class="w-10"></div> 
+</div>
+</nav>
+<main class="max-w-md mx-auto pt-20 px-5 space-y-8 pb-48">
+<section class="space-y-5">
+<div class="w-full aspect-[4/3] bg-niva-gray-light rounded-niva relative overflow-hidden group">
+<img alt="Interior apartment detail" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSQJFsTNUjFi7GXvZB9OGFa1t5mcnb9w5FhZrCAy_B3mUU4G45Bi69GArSxbxZyQnKTn7V9mVlcfdF8IpjOgfTowOJrtMRWfNCJvuA6a7wOSKppMw2nfvXfPRJvZZVsUUBAMKg1TcSVtM6WbhPt8nA-g8MaFBUUq_-tOnn0iuNFFbGCeYzl1X_RIEDD3hsFezkjjnuAJylM4Zati4VGKtPrs7rW1g6dLufxORTbWCtLV47TA_QwpcGMhD6JJx73GgR4b9WCuHNaA"/>
+</div>
+<div class="flex items-end justify-between">
+<div>
+<p class="text-niva-gray-medium text-[10px] font-bold mb-1 uppercase tracking-widest">Startpris</p>
+<h2 class="text-3xl font-black tracking-tight">11.5M <span class="text-lg font-medium text-niva-gray-medium">SEK</span></h2>
+</div>
+<div class="flex -space-x-3 pb-1">
+<img alt="User avatar 1" class="w-10 h-10 rounded-full border-2 border-niva-white grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEHjpUIx9qQVws8Ym-FweZ4bhyqMfPTzabxs2PXW-AbU1joAd_uxYxCZbzk_go26KeK2uitlJ-UXP_dt57SH_-cwyXcAQrbp0ZJ3LPaEpYLba-0KeI7-XEVh9E72WJzZQ7u8r5xESHcpdzHZ9zbURO8o5ZYNK5mCFj0OaAGJwwGWPiNSufOBg2negNP9bT_TzqOLsNKdzNl8i--NBVBdH8Tz5Li42efAhDWEe0LUwAIsE7yW8gZ7KqlLWeYb_SHf8PHjsTmHZmjQ"/>
+<img alt="User avatar 2" class="w-10 h-10 rounded-full border-2 border-niva-white grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABTwALKCBVw4ABd7pUtAiRL1_ZEaPKCeXjEcV9_Ku-4dvB5EVBhDB9hvSDwgKYbR197IwPk8p-57ULrfInxsstDOBm2TKF2rJ0h4ARyvjZgWOuT3ovtuPK408Vta5mkDQwDYU7d1DXmd8VXxkManX6UIdAZGL27kaQR_UsUgF5TMa1y8r4XMUx6QG_j2808nC2KryOeR6u0lmx2OdU9eZUD4-HHprwPVU7mtXxe2YbB0RxvpPXE4t4xoFeO195Sj_3mF31Cf-Enw"/>
+<div class="w-10 h-10 rounded-full border-2 border-niva-white bg-niva-gray-light flex items-center justify-center text-[10px] font-black">
+                        +4
+                    </div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-3 gap-3">
+<div class="bg-niva-gray-light p-4 rounded-niva text-center">
+<p class="text-[9px] font-black text-niva-gray-medium uppercase mb-1 tracking-wider">Värdering</p>
+<p class="text-sm font-bold">12-14M</p>
+</div>
+<div class="bg-niva-gray-light p-4 rounded-niva text-center">
+<p class="text-[9px] font-black text-niva-gray-medium uppercase mb-1 tracking-wider">Brf Betyg</p>
+<div class="flex items-center justify-center space-x-1">
+<span class="text-sm font-black">A++</span>
+<span class="material-symbols-outlined text-[14px] text-niva-black">verified</span>
+</div>
+</div>
+<div class="bg-niva-gray-light p-4 rounded-niva text-center">
+<p class="text-[9px] font-black text-niva-gray-medium uppercase mb-1 tracking-wider">Marginal</p>
+<p class="text-sm font-bold">+15k</p>
+</div>
+</section>
+<section class="p-5 bg-niva-gray-light rounded-niva space-y-5">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-lg">auto_awesome</span>
+<h3 class="font-black uppercase text-[10px] tracking-widest">AI-Sammanfattning</h3>
+</div>
+<ul class="space-y-4">
+<li class="flex items-start space-x-3">
+<span class="w-1.5 h-1.5 rounded-full bg-niva-black mt-2.5 shrink-0"></span>
+<p class="text-[14px] leading-relaxed text-niva-black/80">Stabil förening med exceptionellt låg belåningsgrad (2 400 kr/kvm).</p>
+</li>
+<li class="flex items-start space-x-3">
+<span class="w-1.5 h-1.5 rounded-full bg-niva-black mt-2.5 shrink-0"></span>
+<p class="text-[14px] leading-relaxed text-niva-black/80">Hög potential för värdeökning givet det renoverade skicket och läget.</p>
+</li>
+<li class="flex items-start space-x-3">
+<span class="w-1.5 h-1.5 rounded-full bg-niva-black mt-2.5 shrink-0"></span>
+<p class="text-[14px] leading-relaxed text-niva-black/80">Kassaflödet är positivt även vid en ränteuppgång till 5.5%.</p>
+</li>
+</ul>
+</section>
+<section class="border border-niva-gray-light rounded-niva overflow-hidden bg-niva-white">
+<div class="p-5 space-y-8">
+<div class="flex items-center justify-between border-b border-niva-gray-light pb-4">
+<h3 class="font-black text-sm uppercase tracking-widest">Räkna på kostnad</h3>
+<span class="material-symbols-outlined text-niva-gray-medium text-lg">tune</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-baseline">
+<label class="small-caps-label">Budnivå</label>
+<span class="text-lg font-bold">12.500.000 <span class="text-[10px] font-bold text-niva-gray-medium ml-1 uppercase">kr</span></span>
+</div>
+<div class="px-1 slider-container">
+<div class="active-track" style="width: 50%;"></div>
+<input class="w-full h-1 relative z-10" max="15" min="10" step="0.1" type="range" value="12.5"/>
+</div>
+<div class="flex justify-between text-[10px] text-niva-gray-medium font-black px-1 uppercase tracking-tighter">
+<span>10M</span>
+<span>15M</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-baseline">
+<label class="small-caps-label">Kontantinsats</label>
+<span class="text-lg font-bold">1.725.000 <span class="text-[10px] font-bold text-niva-gray-medium ml-1 uppercase">kr</span></span>
+</div>
+<div class="relative px-1 pt-1 slider-container">
+<div class="active-track" style="width: 25%;"></div>
+<input class="w-full h-1 relative z-10" max="12.5" min="0" step="0.1" type="range" value="3.1"/>
+<div class="absolute top-[0px] left-1 right-1 h-1 pointer-events-none">
+<div class="notch-marker" style="left: 50%;"></div>
+<div class="notch-marker" style="left: 70%;"></div>
+</div>
+</div>
+<div class="relative w-full h-4">
+<span class="absolute text-[9px] font-black text-niva-gray-medium uppercase tracking-widest" style="left: 50%; transform: translateX(-50%);">1% Amort.</span>
+<span class="absolute text-[9px] font-black text-niva-gray-medium uppercase tracking-widest" style="left: 70%; transform: translateX(-50%);">0% Amort.</span>
+</div>
+<div class="flex justify-between items-center bg-niva-gray-light/50 px-4 py-3.5 rounded-niva border border-niva-gray-light">
+<span class="text-[11px] font-black text-niva-gray-medium uppercase tracking-widest">Uppskattat lån</span>
+<span class="text-[15px] font-black tracking-tight">10.775.000 kr</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-baseline">
+<label class="small-caps-label">Ränta</label>
+<span class="text-lg font-bold">4.50 <span class="text-[10px] font-bold text-niva-gray-medium ml-1 uppercase">%</span></span>
+</div>
+<div class="px-1">
+<div class="relative slider-container">
+<div class="active-track" style="width: 50%;"></div>
+<input class="w-full h-1 relative z-10" max="8" min="1" step="0.1" type="range" value="4.5"/>
+</div>
+<div class="flex justify-between text-[10px] text-niva-gray-medium font-black pt-3 uppercase tracking-tighter">
+<span>1.0%</span>
+<span class="opacity-60">Snittränta: 4.1%</span>
+<span>8.0%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-niva-gray-light p-6 border-t border-niva-gray-light">
+<div class="flex justify-between items-center">
+<span class="small-caps-label">Pengar över</span>
+<span class="text-3xl font-black tracking-tighter">+12 400 kr</span>
+</div>
+</div>
+</section>
+</main>
+<div class="fixed bottom-[80px] left-0 w-full p-5 bg-gradient-to-t from-niva-white via-niva-white/95 to-transparent pt-10 z-40">
+<div class="max-w-md mx-auto">
+<button class="w-full bg-niva-black text-niva-white py-5 rounded-niva font-black text-xs uppercase tracking-[0.2em] shadow-xl flex items-center justify-center space-x-3 active:scale-[0.98] transition-transform">
+<span class="material-symbols-outlined text-xl">forum</span>
+<span>Öppna Objektchatt</span>
+</button>
+</div>
+</div>
+<nav class="fixed bottom-0 w-full bg-niva-white border-t border-niva-gray-light z-50">
+<div class="flex items-center justify-around h-20 max-w-md mx-auto px-6 pb-2">
+<button class="flex flex-col items-center space-y-1">
+<span class="material-symbols-outlined text-niva-gray-medium">home</span>
+<span class="text-[9px] font-black uppercase tracking-widest text-niva-gray-medium">Hem</span>
+</button>
+<button class="flex flex-col items-center space-y-1">
+<span class="material-symbols-outlined text-niva-black">search</span>
+<span class="text-[9px] font-black uppercase tracking-widest text-niva-black">Sök</span>
+</button>
+<button class="flex flex-col items-center space-y-1">
+<span class="material-symbols-outlined text-niva-gray-medium">favorite</span>
+<span class="text-[9px] font-black uppercase tracking-widest text-niva-gray-medium">Sparat</span>
+</button>
+<button class="flex flex-col items-center space-y-1">
+<span class="material-symbols-outlined text-niva-gray-medium">person</span>
+<span class="text-[9px] font-black uppercase tracking-widest text-niva-gray-medium">Profil</span>
+</button>
+</div>
+</nav>
+
+</body></html>

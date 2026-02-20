@@ -1,0 +1,216 @@
+/* ─── Nivå Global Styles ─── */
+
+/* ── View transitions ── */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: none;
+}
+
+::view-transition-new(root) {
+    animation: none;
+}
+
+/* ── Custom Range Slider ── */
+.niva-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 9999px;
+    background: #E8E3DC;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Track filled portion via JS inline style or gradient trick */
+.niva-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 9999px;
+}
+
+.niva-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #1A1A1A;
+    border: 3px solid white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    margin-top: -9px;
+    transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.niva-slider::-webkit-slider-thumb:active {
+    transform: scale(1.12);
+}
+
+.niva-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #1A1A1A;
+    border: 3px solid white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+}
+
+.niva-slider::-moz-range-progress {
+    background: #1A1A1A;
+    border-radius: 9999px;
+    height: 4px;
+}
+
+/* Dark mode slider */
+@media (prefers-color-scheme: dark) {
+    .dark .niva-slider {
+        background: #2D2D2D;
+    }
+
+    .dark .niva-slider::-webkit-slider-thumb {
+        background: #FDFCFA;
+        border-color: #141414;
+    }
+
+    .dark .niva-slider::-moz-range-thumb {
+        background: #FDFCFA;
+        border-color: #141414;
+    }
+
+    .dark .niva-slider::-moz-range-progress {
+        background: #FDFCFA;
+    }
+}
+
+/* ── Focus styles ── */
+*:focus-visible {
+    outline: 2px solid #1A1A1A;
+    outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .dark *:focus-visible {
+        outline-color: #FDFCFA;
+    }
+}
+
+/* ── Tabular numbers for data ── */
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Entrance animations ── */
+@keyframes slide-up-fade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes float-gentle {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes pulse-soft {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes shimmer-slide {
+    from {
+        background-position: -200% 0;
+    }
+
+    to {
+        background-position: 200% 0;
+    }
+}
+
+.animate-slide-up {
+    animation: slide-up-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+.animate-float {
+    animation: float-gentle 3s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Staggered card entrance delays */
+.stagger-1 {
+    animation-delay: 0.06s;
+}
+
+.stagger-2 {
+    animation-delay: 0.12s;
+}
+
+.stagger-3 {
+    animation-delay: 0.18s;
+}
+
+.stagger-4 {
+    animation-delay: 0.24s;
+}
+
+.stagger-5 {
+    animation-delay: 0.30s;
+}
+
+.stagger-6 {
+    animation-delay: 0.36s;
+}
+
+/* ── Warm linen surface ── */
+.bg-warm-tint {
+    background: linear-gradient(145deg, #FAF5EE 0%, #FDFCFA 70%);
+}
+
+@media (prefers-color-scheme: dark) {
+    .dark .bg-warm-tint {
+        background: linear-gradient(145deg, #1A1816 0%, #141414 70%);
+    }
+}

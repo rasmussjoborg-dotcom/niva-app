@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Nivå</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        // Brand — confident charcoal, Scandinavian editorial
+                        "primary": "#1A1A1A",
+                        "primary-light": "#333333",
+                        "primary-dark": "#0D0D0D",
+                        "primary-soft": "#F3EDE6",
+                        "primary-hover": "#2D2D2D",
+
+                        // Accent — architectural stone rose
+                        "accent": "#C4A882",
+                        "accent-light": "#D4BFA0",
+                        "accent-dark": "#A68B64",
+                        "accent-soft": "#FAF5EE",
+
+                        // Semantic
+                        "success": "#5A8A72",
+                        "success-soft": "#F2F7F4",
+                        "warning": "#C4A155",
+                        "danger": "#B84747",
+                        "danger-soft": "#FDF2F2",
+
+                        // Backgrounds
+                        "background-light": "#FDFCFA",
+                        "background-dark": "#141414",
+                        "page-bg-light": "#FAF8F5",
+                        "page-bg-dark": "#141414",
+
+                        // Surfaces
+                        "surface-light": "#FDFCFA",
+                        "surface-dark": "#1E1E1E",
+                        "surface-muted-light": "#F5F1EB",
+                        "surface-muted-dark": "#1E1E1E",
+                        "surface-input": "#F5F1EB",
+
+                        // Borders
+                        "border-light": "#E8E3DC",
+                        "border-dark": "#2D2D2D",
+                        "border-input-light": "#DDD7CE",
+
+                        // Text
+                        "text-main": "#1A1A1A",
+                        "text-muted": "#7A7368",
+                        "text-secondary": "#9C9488",
+                        "text-placeholder": "#B5AFA6",
+                        "text-info": "#5C564E",
+
+                        // Legacy aliases
+                        "mid-gray": "#9C9488",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "system-ui", "-apple-system", "sans-serif"],
+                        "display": ['"Instrument Serif"', "Georgia", "serif"],
+                    },
+                    fontSize: {
+                        "micro": ["9px", { lineHeight: "1.4", fontWeight: "700" }],
+                        "nano": ["10px", { lineHeight: "1.4", fontWeight: "600" }],
+                        "xs-ui": ["11px", { lineHeight: "1.5" }],
+                        "sm-ui": ["13px", { lineHeight: "1.5" }],
+                        "body": ["15px", { lineHeight: "1.6" }],
+                    },
+                    borderRadius: {
+                        "ios": "16px",
+                        "card": "20px",
+                        "section": "16px",
+                        "button": "14px",
+                        "input": "14px",
+                        "pill": "9999px",
+                    },
+                    spacing: {
+                        "page-x": "20px",
+                        "page-gap": "28px",
+                        "card-inset": "20px",
+                    },
+                },
+            },
+        }
+    </script>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            -webkit-tap-highlight-color: transparent;
+            min-height: 100dvh;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body,
+        #root {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Safe area padding utilities */
+        .pt-safe-top {
+            padding-top: env(safe-area-inset-top, 0px);
+        }
+
+        .pb-safe-bottom {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        .mb-safe-bottom {
+            margin-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        /* Slide-up animation for payment sheet */
+        @keyframes slide-up {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+        }
+
+        /* Fade in */
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fade-in 0.2s ease-out;
+        }
+
+        /* Typography utilities (ui-skills compliance) */
+        .text-balance {
+            text-wrap: balance;
+        }
+
+        .text-pretty {
+            text-wrap: pretty;
+        }
+    </style>
+</head>
+
+<body class="bg-page-bg-light text-text-main antialiased overflow-hidden">
+    <div id="root" class="h-full w-full"></div>
+    <script type="module" src="./App.tsx"></script>
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+{
+    "buildCommand": "bun install && bun build ./src/frontend/index.html --outdir ./dist",
+    "outputDirectory": "dist",
+    "installCommand": "curl -fsSL https://bun.sh/install | bash && export PATH=\"$HOME/.bun/bin:$PATH\" && bun install",
+    "framework": null
+}

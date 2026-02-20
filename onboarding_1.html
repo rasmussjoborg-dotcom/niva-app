@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nivå Onboarding - Din ekonomiska profil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#000000",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#121212",
+                        "border-light": "#E5E5E5",
+                        "border-dark": "#333333",
+                        "text-main": "#000000",
+                        "text-muted": "#A6A6A6",
+                        "wireframe-gray": "#F2F2F2",
+                        "mid-gray": "#A6A6A6",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "md": "0.375rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100dvh;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-white flex justify-center">
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen relative shadow-2xl overflow-hidden flex flex-col px-6">
+<div class="h-12 w-full flex items-end justify-between pb-2 text-xs font-medium">
+<span>9:41</span>
+<div class="flex items-center gap-1.5">
+<span class="material-icons-outlined text-[16px]">signal_cellular_alt</span>
+<span class="material-icons-outlined text-[16px]">wifi</span>
+<span class="material-icons-outlined text-[18px]">battery_full</span>
+</div>
+</div>
+<header class="py-4 flex items-center mb-8">
+<button class="w-10 h-10 -ml-2 flex items-center justify-center rounded-full hover:bg-wireframe-gray dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined text-black dark:text-white">chevron_left</span>
+</button>
+<div class="flex-1 flex justify-center pr-8">
+<div class="flex gap-1">
+<div class="h-1 w-8 rounded-full bg-black dark:bg-white"></div>
+<div class="h-1 w-8 rounded-full bg-wireframe-gray dark:bg-border-dark"></div>
+<div class="h-1 w-8 rounded-full bg-wireframe-gray dark:bg-border-dark"></div>
+</div>
+</div>
+</header>
+<main class="flex-1">
+<div class="mb-10">
+<h1 class="text-3xl font-bold tracking-tight text-black dark:text-white mb-3">Din ekonomiska profil</h1>
+<p class="text-mid-gray text-base leading-relaxed">För att räkna ut din personliga marginal behöver vi veta dina förutsättningar.</p>
+</div>
+<div class="space-y-8">
+<div class="space-y-4">
+<label class="text-xs font-bold uppercase tracking-widest text-text-muted">Antal vuxna i hushållet</label>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex flex-col items-center justify-center p-5 rounded-2xl border-2 border-black dark:border-white bg-white dark:bg-black text-black dark:text-white transition-all">
+<span class="material-symbols-outlined mb-2">person</span>
+<span class="font-bold">1 vuxen</span>
+</button>
+<button class="flex flex-col items-center justify-center p-5 rounded-2xl border border-border-light dark:border-border-dark bg-white dark:bg-surface-dark text-mid-gray hover:border-mid-gray transition-all">
+<span class="material-symbols-outlined mb-2 text-mid-gray/50">group</span>
+<span class="font-bold">2 vuxna</span>
+</button>
+</div>
+</div>
+<div class="space-y-4">
+<label class="text-xs font-bold uppercase tracking-widest text-text-muted">Total månadsinkomst (efter skatt)</label>
+<div class="relative flex items-center">
+<input class="w-full bg-wireframe-gray dark:bg-surface-dark border-none rounded-2xl p-5 pr-12 text-xl font-bold text-black dark:text-white focus:ring-1 focus:ring-black dark:focus:ring-white" placeholder="0" type="number" value="45000"/>
+<span class="absolute right-5 text-lg font-bold text-mid-gray">kr</span>
+</div>
+<p class="text-xs text-text-muted italic">Inkludera lön, bidrag och andra fasta inkomster.</p>
+</div>
+</div>
+</main>
+<footer class="py-8">
+<button class="w-full bg-black dark:bg-white text-white dark:text-black py-5 rounded-2xl font-bold text-lg active:scale-[0.98] transition-all shadow-lg">
+                Nästa
+            </button>
+</footer>
+<div class="flex justify-center pb-2">
+<div class="h-1.5 w-32 bg-gray-200 dark:bg-gray-800 rounded-full"></div>
+</div>
+</div>
+
+</body></html>

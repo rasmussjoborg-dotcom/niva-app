@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html class="light" lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#000000",
+                        "background-light": "#F7F7F7",
+                        "background-dark": "#121212",
+                        "nivå-gray": "#F2F2F2",
+                        "mid-gray": "#A6A6A6",
+                        "dark-gray": "#666666",
+                        "border-gray": "rgba(0,0,0,0.1)",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "nivå": "16px",
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .chat-bubble-ai {
+            @apply bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 rounded-[16px] rounded-tl-none p-[20px] text-[14px] leading-relaxed text-primary/80 dark:text-white/80;
+        }
+        .chat-bubble-user {
+            @apply bg-white dark:bg-zinc-900 border border-black/10 dark:border-white/10 rounded-[16px] rounded-tr-none p-[20px] text-[14px] leading-relaxed text-primary dark:text-white shadow-sm;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary h-screen flex justify-center">
+<div class="w-full max-w-md bg-white dark:bg-black h-screen flex flex-col relative overflow-hidden shadow-2xl">
+<header class="pt-12 pb-4 px-5 border-b border-black/5 sticky top-0 bg-white/80 dark:bg-black/80 ios-blur z-20">
+<div class="flex items-center justify-between mb-4">
+<button class="w-10 h-10 flex items-center justify-start text-primary dark:text-white">
+<span class="material-symbols-outlined text-[24px]">chevron_left</span>
+</button>
+<div class="text-center">
+<h1 class="text-[13px] font-bold tracking-[0.1em] uppercase">Objektchatt</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-end text-primary dark:text-white">
+<span class="material-symbols-outlined text-[24px]">more_horiz</span>
+</button>
+</div>
+<div class="flex justify-center">
+<div class="inline-flex items-center gap-2 px-4 py-1.5 bg-black/5 dark:bg-white/5 rounded-full border border-black/5 dark:border-white/5">
+<span class="material-symbols-outlined text-sm opacity-40">location_on</span>
+<span class="text-[10px] font-bold uppercase tracking-widest opacity-60">Sibyllegatan 14</span>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-5 py-6 space-y-8 hide-scrollbar">
+<div class="flex flex-col gap-3 items-start max-w-[90%]">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-black dark:bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white dark:text-black">auto_awesome</span>
+</div>
+<span class="text-[9px] font-bold uppercase tracking-widest text-mid-gray">Nivå AI</span>
+</div>
+<div class="chat-bubble-ai">
+                    Hej! Jag har analyserat Sibyllegatan 14 åt dig. Vad vill du veta om föreningens ekonomi eller lägenhetens potential?
+                </div>
+</div>
+<div class="flex flex-col gap-3 items-end ml-auto max-w-[90%]">
+<div class="flex items-center gap-2 justify-end">
+<span class="text-[9px] font-bold uppercase tracking-widest text-mid-gray">Du</span>
+<div class="w-6 h-6 rounded-full border border-black/10 dark:border-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-mid-gray">person</span>
+</div>
+</div>
+<div class="chat-bubble-user">
+                    Hur påverkas min kalkyl om räntan stiger med 1% och vad säger årsredovisningen om lån?
+                </div>
+</div>
+<div class="flex flex-col gap-3 items-start max-w-[95%]">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-black dark:bg-white flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px] text-white dark:text-black">auto_awesome</span>
+</div>
+<span class="text-[9px] font-bold uppercase tracking-widest text-mid-gray">Nivå AI</span>
+</div>
+<div class="chat-bubble-ai space-y-4">
+<p>En ränteökning på 1% höjer din månadskostnad med ca <strong>3 450 kr</strong> efter ränteavdrag.</p>
+<div class="bg-white dark:bg-black/40 p-5 rounded-[16px] border border-black/5 dark:border-white/5 shadow-sm space-y-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-mid-gray">analytics</span>
+<p class="text-[10px] font-bold uppercase tracking-tight text-mid-gray">Föreningens lån</p>
+</div>
+<p class="text-[13px] leading-relaxed text-primary dark:text-white">
+                            BRF Sibyllegatan har en belåningsgrad på <strong>6 200 kr/kvm</strong>. De har tre lån som löper ut under 2024, vilket kan påverka avgiften med ca 5-8%.
+                        </p>
+<div class="pt-2 border-t border-black/5 dark:border-white/5 flex items-center gap-1.5 opacity-60">
+<span class="material-symbols-outlined text-[14px]">description</span>
+<span class="text-[9px] font-bold uppercase tracking-tighter">Källa: Årsredovisning s.14</span>
+</div>
+</div>
+<p>Vill du att jag simulerar effekten på ditt kassaflöde om avgiften höjs med 8%?</p>
+</div>
+</div>
+<div class="h-40"></div>
+</main>
+<div class="absolute bottom-[84px] left-0 right-0 bg-white/95 dark:bg-black/95 ios-blur border-t border-black/5 px-5 pt-4 pb-4 space-y-4 z-20">
+<div class="flex overflow-x-auto gap-2 hide-scrollbar">
+<button class="flex-none px-5 py-2.5 bg-black dark:bg-white text-white dark:text-black rounded-[16px] text-[11px] font-bold uppercase tracking-tight">
+                    Sammanfatta stadgar
+                </button>
+<button class="flex-none px-5 py-2.5 bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/5 rounded-[16px] text-[11px] font-bold uppercase tracking-tight opacity-70 hover:opacity-100 transition-opacity">
+                    Renoveringar?
+                </button>
+<button class="flex-none px-5 py-2.5 bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/5 rounded-[16px] text-[11px] font-bold uppercase tracking-tight opacity-70 hover:opacity-100 transition-opacity">
+                    Analysera kassaflöde
+                </button>
+</div>
+<div class="flex items-center justify-between px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-mid-gray">account_balance_wallet</span>
+<span class="text-[9px] font-bold uppercase tracking-[0.15em] text-mid-gray">LIKVIDITETSPROGNOS</span>
+</div>
+<div class="text-[11px] font-medium text-dark-gray dark:text-gray-400">
+                    Kvar: <span class="font-bold ml-1 text-black dark:text-white">+12 400 kr</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-black/5 dark:bg-white/5 rounded-[16px] flex items-center px-4 py-1 border border-black/5 dark:border-white/5">
+<button class="text-mid-gray hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[22px]">add</span>
+</button>
+<input class="w-full bg-transparent border-none focus:ring-0 text-[14px] py-3 placeholder:text-mid-gray" placeholder="Ställ en fråga..." type="text"/>
+</div>
+<button class="w-[52px] h-[52px] bg-black dark:bg-white rounded-[16px] flex items-center justify-center text-white dark:text-black shadow-sm active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[22px] font-bold">arrow_upward</span>
+</button>
+</div>
+</div>
+<nav class="absolute bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-black/5 h-[84px] flex items-start justify-around px-4 pt-3 z-30">
+<button class="flex flex-col items-center gap-1 w-16">
+<span class="material-symbols-outlined text-[24px] text-mid-gray">home</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-mid-gray">Hem</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-16">
+<span class="material-symbols-outlined text-[24px] text-primary dark:text-white">search</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-primary dark:text-white">Sök</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-16">
+<span class="material-symbols-outlined text-[24px] text-mid-gray">bookmark</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-mid-gray">Sparat</span>
+</button>
+<button class="flex flex-col items-center gap-1 w-16">
+<span class="material-symbols-outlined text-[24px] text-mid-gray">person</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-mid-gray">Profil</span>
+</button>
+</nav>
+<div class="absolute top-0 left-0 w-full h-0.5 bg-black/5 dark:bg-white/5"></div>
+</div>
+
+</body></html>

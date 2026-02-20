@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html class="light" lang="sv"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1A1A1A",
+                        "secondary": "#52525B",
+                        "background-light": "#FDFCFB",
+                        "background-dark": "#0F0F0F",
+                        "soft-gray": "#F7F7F6",
+                        "border-subtle": "#EBE9E6",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.75rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "2xl": "16px",
+                        "3xl": "32px",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "subtle-lift": "0 2px 8px rgba(0,0,0,0.02)",
+                        "ios-depth": "0 1px 3px rgba(0,0,0,0.02)"
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bottom-safe {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-primary min-h-screen flex justify-center">
+<div class="w-full max-w-md bg-white dark:bg-zinc-950 min-h-screen shadow-[0_0_60px_rgba(0,0,0,0.03)] relative flex flex-col">
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl px-5 py-5 flex items-center border-b border-border-subtle dark:border-zinc-900">
+<button class="w-8 h-8 flex items-center justify-start text-primary dark:text-white transition-opacity active:opacity-40">
+<span class="material-icons text-xl">arrow_back_ios</span>
+</button>
+<h1 class="flex-1 text-center font-bold text-[13px] tracking-[0.2em] dark:text-white uppercase">Dokumentkontroll</h1>
+<div class="w-8"></div>
+</header>
+<main class="flex-1 px-5 py-6 space-y-6">
+<section>
+<div class="relative">
+<input class="w-full bg-soft-gray dark:bg-zinc-900 border-none rounded-2xl px-5 py-4 text-[13px] text-zinc-500 font-medium focus:ring-0" readonly="" type="text" value="https://www.hemnet.se/bostad/sibyllegatan-14..."/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center">
+<span class="material-symbols-outlined text-[18px] text-zinc-400">sync</span>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-zinc-900 rounded-2xl border border-border-subtle dark:border-zinc-800 shadow-sm overflow-hidden">
+<div class="p-5 space-y-6">
+<div>
+<h2 class="text-[20px] font-extrabold tracking-tight dark:text-white text-primary leading-tight">Verifierar underlag</h2>
+<p class="text-[14px] text-secondary mt-1 font-medium">Sibyllegatan 14, Stockholm</p>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-icons text-zinc-300 dark:text-zinc-600 text-[20px]">check_circle</span>
+<span class="text-[14px] font-medium dark:text-zinc-200 text-primary">Årsredovisning</span>
+</div>
+<span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider">Hittad</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-icons text-zinc-300 dark:text-zinc-600 text-[20px]">check_circle</span>
+<span class="text-[14px] font-medium dark:text-zinc-200 text-primary">Stadgar</span>
+</div>
+<span class="text-[11px] text-zinc-400 font-bold uppercase tracking-wider">Hittad</span>
+</div>
+<div class="flex items-center justify-between py-4 px-4 bg-soft-gray dark:bg-zinc-800/40 rounded-2xl border border-border-subtle dark:border-zinc-800">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-zinc-900 dark:text-zinc-100 text-[20px]">error</span>
+<span class="text-[14px] font-bold dark:text-white text-primary">Energideklaration</span>
+</div>
+<span class="text-[10px] text-zinc-900 dark:text-zinc-100 font-bold uppercase tracking-widest bg-white dark:bg-zinc-700 px-2 py-1 rounded-lg">Saknas</span>
+</div>
+</div>
+<div class="pt-2 space-y-3">
+<label class="block text-[10px] font-bold text-zinc-400 uppercase tracking-[0.15em] px-1">Lägg till länk manuellt</label>
+<div class="flex flex-col gap-3">
+<input class="w-full bg-soft-gray dark:bg-zinc-950 border border-border-subtle dark:border-zinc-800 rounded-2xl px-5 py-4 text-[14px] placeholder:text-zinc-400 focus:ring-1 focus:ring-zinc-900 dark:text-white transition-all outline-none" placeholder="Klistra in länk till dokument" type="text"/>
+<button class="bg-primary dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-4 rounded-2xl text-[14px] font-bold active:scale-[0.98] transition-all">
+                                Lägg till
+                            </button>
+</div>
+</div>
+</div>
+</section>
+<p class="text-center text-[12px] text-secondary px-8 leading-relaxed font-medium opacity-70">
+                Vi söker automatiskt efter dokument. Om något saknas kan du klistra in en länk för att komplettera.
+            </p>
+</main>
+<div class="px-5 pb-4 space-y-4">
+<button class="w-full bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-600 font-bold py-5 rounded-2xl text-[15px] cursor-not-allowed tracking-tight" disabled="">
+                Fortsätt till analys
+            </button>
+<p class="text-[9px] text-center text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.2em] font-bold">
+                Väntar på samtliga underlag
+            </p>
+</div>
+<nav class="sticky bottom-0 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-2xl border-t border-border-subtle dark:border-zinc-900 px-6 pt-3 pb-8 bottom-safe z-50">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<span class="text-[9px] font-bold tracking-widest">HEM</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary dark:text-white" href="#">
+<span class="material-symbols-outlined text-[24px]">search</span>
+<span class="text-[9px] font-bold tracking-widest">SÖK</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined text-[24px]">bookmark</span>
+<span class="text-[9px] font-bold tracking-widest">SPARAT</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-zinc-400" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="text-[9px] font-bold tracking-widest">PROFIL</span>
+</a>
+</div>
+</nav>
+</div>
+
+</body></html>
