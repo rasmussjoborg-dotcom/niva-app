@@ -284,8 +284,7 @@ const Step1 = ({ onNext, buyingTogether, setBuyingTogether }: {
    Step 2 — Debts & expenses
    ───────────────────────────────────────────────────────── */
 const Step2 = ({ onFinish, onBack, buyingTogether }: { onFinish: () => void; onBack: () => void; buyingTogether: boolean }) => {
-    const [hasCar, setHasCar] = useState(false);
-    const [hasKids, setHasKids] = useState(true);
+
 
     const inputClass = "w-full bg-surface-input dark:bg-surface-dark rounded-2xl px-5 py-4 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 transition-all outline-none";
 
@@ -331,61 +330,7 @@ const Step2 = ({ onFinish, onBack, buyingTogether }: { onFinish: () => void; onB
                         </p>
                     </div>
 
-                    {/* ── Living Costs Card ── */}
-                    <div className="bg-white dark:bg-surface-dark rounded-2xl p-5 shadow-sm animate-slide-up stagger-2">
-                        <div className="flex items-center gap-2.5 mb-4">
-                            <div className="size-8 rounded-xl bg-primary-soft dark:bg-primary/20 flex items-center justify-center">
-                                <span className="material-symbols-outlined text-[18px] text-primary dark:text-primary-light">home</span>
-                            </div>
-                            <label className="text-[13px] font-semibold text-text-main dark:text-white">Levnadskostnader</label>
-                        </div>
-                        <div className="space-y-0.5 rounded-xl overflow-hidden">
-                            <button
-                                onClick={() => { haptic('light'); setHasCar(!hasCar); }}
-                                className="w-full flex items-center justify-between px-5 py-4 bg-surface-input dark:bg-[#1E293B] cursor-pointer transition-colors hover:bg-border-light dark:hover:bg-border-dark active:bg-border-light"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className="material-symbols-outlined text-[20px] text-text-info dark:text-text-muted">directions_car</span>
-                                    <span className="text-[15px] font-medium text-text-main dark:text-white">{buyingTogether ? 'Vi har bil' : 'Jag har bil'}</span>
-                                </div>
-                                <div className={`w-[51px] h-[31px] rounded-full p-[2px] transition-colors duration-200 ${hasCar ? 'bg-primary' : 'bg-border-light dark:bg-border-dark'}`}>
-                                    <div className={`size-[27px] rounded-full bg-white shadow-sm transition-transform duration-200 ${hasCar ? 'translate-x-5' : ''}`}></div>
-                                </div>
-                            </button>
-                            <button
-                                onClick={() => { haptic('light'); setHasKids(!hasKids); }}
-                                className="w-full flex items-center justify-between px-5 py-4 bg-surface-input dark:bg-[#1E293B] cursor-pointer transition-colors hover:bg-border-light dark:hover:bg-border-dark active:bg-border-light"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span className="material-symbols-outlined text-[20px] text-text-info dark:text-text-muted">child_care</span>
-                                    <span className="text-[15px] font-medium text-text-main dark:text-white">{buyingTogether ? 'Vi har barn' : 'Jag har barn'}</span>
-                                </div>
-                                <div className={`w-[51px] h-[31px] rounded-full p-[2px] transition-colors duration-200 ${hasKids ? 'bg-primary' : 'bg-border-light dark:bg-border-dark'}`}>
-                                    <div className={`size-[27px] rounded-full bg-white shadow-sm transition-transform duration-200 ${hasKids ? 'translate-x-5' : ''}`}></div>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
 
-                    {/* ── What you get — promotional card ── */}
-                    <div className="bg-gradient-to-br from-[#1A1A1A] to-[#2D2D2D] rounded-2xl p-5 animate-slide-up stagger-3">
-                        <div className="flex items-center gap-2.5 mb-3">
-                            <span className="material-symbols-outlined text-[18px] text-white">auto_awesome</span>
-                            <span className="text-[13px] font-semibold text-white">Vad ingår i din analys</span>
-                        </div>
-                        <div className="space-y-2.5">
-                            {[
-                                { icon: 'trending_up', text: 'Låneutrymme baserat på din ekonomi' },
-                                { icon: 'analytics', text: 'Månadskostnad med olika räntor' },
-                                { icon: 'shield', text: 'Risknivå och marginal efter alla kostnader' },
-                            ].map((item, i) => (
-                                <div key={i} className="flex items-center gap-3">
-                                    <span className="material-symbols-outlined text-[16px] text-white/60">{item.icon}</span>
-                                    <span className="text-[13px] text-white/90">{item.text}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
                 </div>
 
                 <button
