@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHousehold } from '../context/HouseholdContext';
 import { BackButton } from './ui/BackButton';
+import { PaymentSheet } from './PaymentSheet';
 import { haptic } from '../utils/haptics';
 import type { AnalysisData } from '../types';
 
@@ -18,6 +19,7 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
     const [ranta, setRanta] = useState(4.5);
     const [avgift, setAvgift] = useState(4500);
     const [isPremium, setIsPremium] = useState(false);
+    const [showPayment, setShowPayment] = useState(false);
     const isPartnerLinked = isHousehold && state.partner?.linked;
 
     const loanAmount = (budniva * 1000000) - (kontantinsats * 1000000);
@@ -29,7 +31,11 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
     const formatMKr = (n: number) => new Intl.NumberFormat('sv-SE').format(Math.round(n));
 
     const handleUnlock = () => {
-        haptic('impact');
+        haptic('selection');
+        setShowPayment(true);
+    };
+
+    const handlePaymentSuccess = () => {
         setIsPremium(true);
     };
 
@@ -302,6 +308,14 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
                     )}
                 </div>
             </main>
+
+            {/* Payment Sheet */}
+            <PaymentSheet
+                isOpen={showPayment}
+                onClose={() => setShowPayment(false)}
+                onSuccess={handlePaymentSuccess}
+                address={analysis.address}
+            />
         </div>
     );
 };
