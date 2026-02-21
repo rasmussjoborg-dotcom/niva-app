@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHousehold } from '../context/HouseholdContext';
 import type { AnalysisData } from '../types';
 
@@ -20,6 +20,14 @@ const USER_AVATAR = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWzmKf6
 export const Home = ({ onNewAnalysis, onOpenAnalysis, onOpenProfile, analyses }: HomeProps) => {
     const { state, isHousehold } = useHousehold();
     const isPartnerLinked = isHousehold && state.partner?.linked;
+    const [fetchState, setFetchState] = useState<'idle' | 'loading' | 'done'>('idle');
+
+    const handleFetch = () => {
+        setFetchState('loading');
+        setTimeout(() => {
+            setFetchState('done');
+        }, 2500);
+    };
 
     return (
         <div className="w-full h-full bg-page-bg-light dark:bg-page-bg-dark relative overflow-hidden flex flex-col">
@@ -40,7 +48,7 @@ export const Home = ({ onNewAnalysis, onOpenAnalysis, onOpenProfile, analyses }:
 
             {/* ── Main ── */}
             <main className="flex-1 overflow-y-auto pb-safe-bottom hide-scrollbar">
-                {/* Hero — Search prompt */}
+                {/* Hero */}
                 <div className="px-page-x pt-4 pb-8">
                     <div className="mb-6 animate-slide-up">
                         <h2 className="text-[30px] font-display leading-[1.15] text-balance text-text-main dark:text-white">
@@ -48,23 +56,105 @@ export const Home = ({ onNewAnalysis, onOpenAnalysis, onOpenProfile, analyses }:
                         </h2>
                     </div>
 
-                    {/* ── Add Property CTA — core action ── */}
+                    {/* ── Inline Search Card ── */}
                     <div className="animate-slide-up stagger-1">
-                        <button
-                            onClick={onNewAnalysis}
-                            className="w-full bg-primary rounded-2xl p-5 text-left active:opacity-90 transition-opacity"
-                        >
+                        <div className="bg-white dark:bg-surface-dark rounded-2xl border border-border-light dark:border-border-dark p-5 space-y-4">
                             <div className="flex items-center gap-3">
-                                <div className="size-10 rounded-xl bg-white/15 flex items-center justify-center">
-                                    <span className="material-symbols-outlined text-[22px] text-white">add_home</span>
+                                <div className="w-10 h-10 bg-primary-soft dark:bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                                    <span className="material-symbols-outlined text-primary text-[20px]">link</span>
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="text-[15px] font-semibold text-white">Lägg till ett objekt</h3>
-                                    <p className="text-[13px] text-white/70">Få en komplett ekonomisk analys</p>
+                                <div>
+                                    <h3 className="text-[15px] font-semibold text-text-main dark:text-white leading-tight">Hitta din bostad</h3>
+                                    <p className="text-[12px] text-text-muted leading-snug">Klistra in en mäklarlänk för att starta</p>
                                 </div>
-                                <span className="material-symbols-outlined text-[20px] text-white/70">chevron_right</span>
                             </div>
-                        </button>
+                            <div className="relative">
+                                <input className="w-full h-[56px] bg-surface-input dark:bg-surface-dark rounded-2xl px-5 pr-14 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-border-light dark:border-border-dark" id="property-link" placeholder="Klistra in mäklarlänken..." type="text" readOnly={fetchState !== 'idle'} />
+                                <button className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors">
+                                    <span className="material-symbols-outlined text-[22px]">content_paste</span>
+                                </button>
+                            </div>
+                            {fetchState === 'idle' && (
+                                <button onClick={handleFetch} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
+                                    <span className="material-symbols-outlined text-[22px]">search</span>
+                                    <span>Hämta bostadsdata</span>
+                                </button>
+                            )}
+                            {fetchState === 'loading' && (
+                                <div className="flex items-center gap-3 py-3">
+                                    <span className="material-symbols-outlined text-primary text-[20px] animate-spin">sync</span>
+                                    <div>
+                                        <p className="text-[14px] font-semibold text-text-main dark:text-white">Hämtar bostadsdata…</p>
+                                        <p className="text-[12px] text-text-muted">Sibyllegatan 14, Stockholm</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* ── Fetch Results (inside same card) ── */}
+                            {fetchState === 'done' && (
+                                <div className="animate-slide-up space-y-4">
+                                    <hr className="border-border-light dark:border-border-dark -mx-5" />
+                                    <div>
+                                        <h2 className="text-[18px] font-bold tracking-tight text-text-main dark:text-white leading-tight">Vi har hittat bostaden</h2>
+                                        <p className="text-[13px] text-text-secondary mt-1 font-medium">Sibyllegatan 14, Stockholm</p>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {/* Årsredovisning — found */}
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-icons text-[20px] text-emerald-500">check_circle</span>
+                                                <span className="text-[14px] font-medium text-text-main dark:text-white">Årsredovisning</span>
+                                            </div>
+                                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Hittad</span>
+                                        </div>
+                                        {/* Stadgar — found */}
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-icons text-[20px] text-emerald-500">check_circle</span>
+                                                <span className="text-[14px] font-medium text-text-main dark:text-white">Stadgar</span>
+                                            </div>
+                                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Hittad</span>
+                                        </div>
+                                        {/* Ekonomisk plan — found */}
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-icons text-[20px] text-emerald-500">check_circle</span>
+                                                <span className="text-[14px] font-medium text-text-main dark:text-white">Ekonomisk plan</span>
+                                            </div>
+                                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Hittad</span>
+                                        </div>
+                                        {/* Energideklaration — missing */}
+                                        <div className="flex items-center justify-between py-3 px-4 bg-amber-50/50 dark:bg-amber-500/5 rounded-2xl border border-amber-200/50 dark:border-amber-500/10">
+                                            <div className="flex items-center gap-3">
+                                                <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px]">error</span>
+                                                <span className="text-[14px] font-semibold text-text-main dark:text-white">Energideklaration</span>
+                                            </div>
+                                            <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold uppercase tracking-widest bg-amber-100 dark:bg-amber-500/10 px-2.5 py-1 rounded-lg">Saknas</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Manual upload */}
+                                    <div className="pt-1 space-y-3">
+                                        <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-widest px-1">Hittade vi inte allt?</label>
+                                        <div className="flex gap-3">
+                                            <input className="flex-1 bg-surface-input dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-2xl px-4 py-3.5 text-[14px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Länk till PDF eller ladda upp…" type="text" />
+                                            <button className="shrink-0 bg-primary hover:bg-primary/90 text-white px-5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.98] transition-all">
+                                                Lägg till
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Continue button */}
+                                    <button onClick={onNewAnalysis} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
+                                        <span>Fortsätt till analys</span>
+                                        <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+                                    </button>
+                                    <p className="text-center text-[12px] text-text-muted leading-relaxed">
+                                        Du kan lägga till saknade dokument senare.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

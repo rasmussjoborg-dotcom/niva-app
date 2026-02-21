@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BackButton } from './ui/BackButton';
 
-const Step1 = ({ onPremium, onFree, onBack, hideHeader }: { onPremium: () => void, onFree: () => void, onBack: () => void, hideHeader?: boolean }) => {
+const Step1 = ({ onFinish, onBack, hideHeader }: { onFinish: () => void, onBack: () => void, hideHeader?: boolean }) => {
     const [fetchState, setFetchState] = useState<'idle' | 'loading' | 'done'>('idle');
 
     const handleFetch = () => {
         setFetchState('loading');
-        setTimeout(() => setFetchState('done'), 2500);
+        setTimeout(() => {
+            setFetchState('done');
+            onFinish();
+        }, 2500);
     };
 
     return (
@@ -19,134 +22,45 @@ const Step1 = ({ onPremium, onFree, onBack, hideHeader }: { onPremium: () => voi
                 </nav>
             )}
             <main className="flex-1 overflow-y-auto hide-scrollbar px-page-x pt-6 pb-6 space-y-6">
-                <section className="space-y-2">
-                    <label className="text-[11px] font-semibold uppercase tracking-widest text-text-muted px-1" htmlFor="property-link">Klistra in länk</label>
-                    <div className="relative group">
+                {/* Unified search card */}
+                <section className="bg-white dark:bg-surface-dark rounded-2xl border border-border-light dark:border-border-dark p-5 space-y-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary-soft dark:bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                            <span className="material-symbols-outlined text-primary text-[20px]">link</span>
+                        </div>
+                        <div>
+                            <h3 className="text-[15px] font-semibold text-text-main dark:text-white leading-tight">Hitta din bostad</h3>
+                            <p className="text-[12px] text-text-muted leading-snug">Klistra in en mäklarlänk för att starta</p>
+                        </div>
+                    </div>
+                    <div className="relative">
                         <input className="w-full h-[56px] bg-surface-input dark:bg-surface-dark rounded-2xl px-5 pr-14 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-border-light dark:border-border-dark" id="property-link" placeholder="Klistra in mäklarlänken..." type="text" />
                         <button className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors">
                             <span className="material-symbols-outlined text-[22px]">content_paste</span>
                         </button>
                     </div>
+                    {fetchState === 'idle' && (
+                        <button onClick={handleFetch} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
+                            <span className="material-symbols-outlined text-[22px]">search</span>
+                            <span>Hämta bostadsdata</span>
+                        </button>
+                    )}
                 </section>
 
-                {/* CTA button */}
-                {fetchState === 'idle' && (
-                    <button onClick={handleFetch} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
-                        <span className="material-symbols-outlined text-[22px]">search</span>
-                        <span>Hämta bostadsdata</span>
-                    </button>
-                )}
-
-                {/* Empty state card (before fetch) */}
-                {fetchState === 'idle' && (
-                    <section>
-                        <div className="w-full aspect-[16/10] bg-white dark:bg-surface-dark border-2 border-dashed border-border-light dark:border-border-dark rounded-2xl flex flex-col items-center justify-center p-6 text-center space-y-4">
-                            <div className="w-12 h-12 bg-primary-soft dark:bg-primary/10 rounded-full flex items-center justify-center">
-                                <span className="material-symbols-outlined text-primary text-[24px]">link</span>
+                {/* Loading indicator */}
+                {fetchState === 'loading' && (
+                    <section className="bg-white dark:bg-surface-dark rounded-2xl border border-border-light dark:border-border-dark p-5 animate-slide-up">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-primary-soft dark:bg-primary/10 rounded-xl flex items-center justify-center">
+                                <span className="material-symbols-outlined text-primary text-[20px] animate-spin">sync</span>
                             </div>
-                            <div className="space-y-1">
-                                <h3 className="text-[15px] font-semibold text-text-main dark:text-white">Hitta ditt nästa hem</h3>
-                                <p className="text-[13px] text-text-muted leading-snug max-w-[240px] mx-auto">
-                                    Klistra in en länk ovan för att hämta bilder och dokument. Vi bjuder på en första priskoll direkt.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-                )}
-
-                {/* Results card (loading / done) */}
-                {fetchState !== 'idle' && (
-                    <section className="bg-white dark:bg-surface-dark rounded-2xl border border-border-light dark:border-border-dark overflow-hidden animate-slide-up">
-                        <div className="p-5 space-y-6">
                             <div>
-                                <h2 className="text-[20px] font-bold tracking-tight text-text-main dark:text-white leading-tight">
-                                    {fetchState === 'loading' ? 'Hämtar underlag…' : 'Vi har hittat bostaden'}
-                                </h2>
-                                <p className="text-[14px] text-text-secondary mt-1 font-medium">Sibyllegatan 14, Stockholm</p>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <span className={`material-icons text-[20px] ${fetchState === 'loading' ? 'text-border-light dark:text-border-dark' : 'text-emerald-500'}`}>check_circle</span>
-                                        <span className="text-[14px] font-medium text-text-main dark:text-white">Årsredovisning</span>
-                                    </div>
-                                    <span className="text-[11px] text-text-muted font-semibold uppercase tracking-wider">{fetchState === 'loading' ? 'Söker...' : 'Hittad'}</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <span className={`material-icons text-[20px] ${fetchState === 'loading' ? 'text-border-light dark:text-border-dark' : 'text-emerald-500'}`}>check_circle</span>
-                                        <span className="text-[14px] font-medium text-text-main dark:text-white">Stadgar</span>
-                                    </div>
-                                    <span className="text-[11px] text-text-muted font-semibold uppercase tracking-wider">{fetchState === 'loading' ? 'Söker...' : 'Hittad'}</span>
-                                </div>
-                                <div className="flex items-center justify-between py-4 px-4 bg-amber-50/50 dark:bg-amber-500/5 rounded-2xl border border-amber-200/50 dark:border-amber-500/10">
-                                    <div className="flex items-center gap-3">
-                                        <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px]">error</span>
-                                        <span className="text-[14px] font-semibold text-text-main dark:text-white">Energideklaration</span>
-                                    </div>
-                                    <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold uppercase tracking-widest bg-amber-100 dark:bg-amber-500/10 px-2.5 py-1 rounded-lg">Saknas</span>
-                                </div>
-                            </div>
-                            <div className="pt-2 space-y-3">
-                                <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-widest px-1">Hittade vi inte allt?</label>
-                                <div className="flex flex-col gap-3">
-                                    <input className="w-full bg-surface-input dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-2xl px-5 py-4 text-[14px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Klistra in länk till PDF eller ladda upp..." type="text" />
-                                    <button className="bg-primary hover:bg-primary/90 text-white px-6 py-4 rounded-2xl text-[14px] font-semibold active:scale-[0.98] transition-all">
-                                        Lägg till
-                                    </button>
-                                </div>
+                                <h3 className="text-[15px] font-semibold text-text-main dark:text-white">Hämtar bostadsdata…</h3>
+                                <p className="text-[12px] text-text-muted">Sibyllegatan 14, Stockholm</p>
                             </div>
                         </div>
                     </section>
                 )}
-
-                {/* ── Premium section ── */}
-                <section className="bg-white dark:bg-surface-dark rounded-2xl p-5 space-y-5 border-2 border-primary/20 dark:border-primary/30 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 bg-primary text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-bl-xl">Premium</div>
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-text-muted">Fullständig analys</h2>
-                        <div className="flex items-baseline gap-0.5"><span className="text-[17px] font-bold text-text-main dark:text-white">99</span><span className="text-[10px] font-semibold text-text-muted uppercase">kr</span></div>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-primary-soft dark:bg-primary/10 flex items-center justify-center"><span className="material-symbols-outlined text-primary text-[20px]">verified_user</span></div>
-                            <div><p className="text-[14px] font-semibold text-text-main dark:text-white">Föreningens finanser</p><p className="text-[11px] text-text-muted uppercase tracking-wider">Dolda skulder, prognoser, avgiftsrisker</p></div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-primary-soft dark:bg-primary/10 flex items-center justify-center"><span className="material-symbols-outlined text-primary text-[20px]">query_stats</span></div>
-                            <div><p className="text-[14px] font-semibold text-text-main dark:text-white">Räntetest</p><p className="text-[11px] text-text-muted uppercase tracking-wider">Se hur din marginal förändras vid ränteuppgång</p></div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-primary-soft dark:bg-primary/10 flex items-center justify-center"><span className="material-symbols-outlined text-primary text-[20px]">smart_toy</span></div>
-                            <div><p className="text-[14px] font-semibold text-text-main dark:text-white">AI-expert</p><p className="text-[11px] text-text-muted uppercase tracking-wider">Ställ obegränsat med frågor om föreningen</p></div>
-                        </div>
-                    </div>
-                    <button onClick={onPremium} className="w-full h-[52px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all">
-                        <span className="material-symbols-outlined text-[20px]">lock_open</span>
-                        Lås upp fullständig analys — 99 kr
-                    </button>
-                </section>
-
-                {/* ── Free section ── */}
-                <section className="bg-white dark:bg-surface-dark rounded-2xl p-5 space-y-5 border border-border-light dark:border-border-dark">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-[11px] font-semibold uppercase tracking-widest text-text-muted">Kostnadsfri priskoll</h2>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg">Gratis</span>
-                    </div>
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center"><span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[20px]">home</span></div>
-                            <div><p className="text-[14px] font-semibold text-text-main dark:text-white">Grundöversikt</p><p className="text-[11px] text-text-muted uppercase tracking-wider">Boyta, avgift, våning & byggår</p></div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center"><span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[20px]">payments</span></div>
-                            <div><p className="text-[14px] font-semibold text-text-main dark:text-white">Snabb priskoll</p><p className="text-[11px] text-text-muted uppercase tracking-wider">Estimerat marknadsvärde baserat på data</p></div>
-                        </div>
-                    </div>
-                    <button onClick={onFree} className="w-full h-[52px] bg-surface-input dark:bg-white/5 text-text-main dark:text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-2 active:scale-[0.98] transition-all border border-border-light dark:border-border-dark">
-                        Se kostnadsfri priskoll
-                    </button>
-                </section>
             </main>
         </div>
     );
@@ -441,7 +355,6 @@ const Step4 = ({ onFinish, onBack }: { onFinish: () => void, onBack: () => void 
 
 export const NewAnalysis = ({ onFinish, onBack, hideHeader }: { onFinish: () => void, onBack: () => void, hideHeader?: boolean }) => {
     const [step, setStep] = useState(1);
-    const [showPayment, setShowPayment] = useState(false);
 
     const prevStep = () => {
         if (step > 1) setStep(s => s - 1);
@@ -450,14 +363,7 @@ export const NewAnalysis = ({ onFinish, onBack, hideHeader }: { onFinish: () => 
 
     return (
         <div className={`w-full h-full bg-page-bg-light dark:bg-page-bg-dark text-text-main dark:text-white relative ${hideHeader ? 'hide-inner-headers' : ''}`}>
-            {step === 1 && <Step1 onPremium={() => setShowPayment(true)} onFree={() => onFinish()} onBack={onBack} hideHeader={hideHeader} />}
-
-            {showPayment && (
-                <Step4
-                    onFinish={() => { setShowPayment(false); onFinish(); }}
-                    onBack={() => { setShowPayment(false); setStep(1); }}
-                />
-            )}
+            {step === 1 && <Step1 onFinish={onFinish} onBack={onBack} hideHeader={hideHeader} />}
         </div>
     );
 };

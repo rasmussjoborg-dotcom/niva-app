@@ -4,7 +4,7 @@ import "./styles/globals.css";
 import { Home } from "./components/Home";
 import { Onboarding } from "./components/Onboarding";
 import { PartnerInvite } from "./components/PartnerInvite";
-import { NewAnalysis } from "./components/NewAnalysis";
+
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectChat } from "./components/ObjectChat";
 import { Profile } from "./components/Profile";
@@ -15,11 +15,11 @@ import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { haptic } from "./utils/haptics";
 import type { AnalysisData } from "./types";
 
-type ViewType = "home" | "onboarding" | "partnerInvite" | "newAnalysis" | "objectDetail" | "objectChat" | "profile";
+type ViewType = "home" | "onboarding" | "partnerInvite" | "objectDetail" | "objectChat" | "profile";
 
 // Define which views are "root" (no swipe-back) and the back targets
 const VIEW_BACK_MAP: Partial<Record<ViewType, ViewType>> = {
-    newAnalysis: "home",
+
     objectDetail: "home",
     objectChat: "objectDetail",
     profile: "home",
@@ -107,10 +107,7 @@ const App = () => {
                 title = '';
                 // PartnerInvite has its own header with Nivå logo + step count
                 return null;
-            case 'newAnalysis':
-                title = 'Starta ny analys';
-                onBackFn = () => navigate('home', 'back');
-                break;
+
             case 'objectDetail':
                 title = selectedAnalysis?.address ?? '';
                 onBackFn = () => navigate('home', 'back');
@@ -163,19 +160,13 @@ const App = () => {
                             )}
                             {currentView === "home" && (
                                 <Home
-                                    onNewAnalysis={() => navigate("newAnalysis", 'forward')}
+                                    onNewAnalysis={() => { setSelectedAnalysis(ANALYSES[0]); navigate("objectDetail", 'forward'); }}
                                     onOpenAnalysis={handleOpenAnalysis}
                                     onOpenProfile={() => navigate("profile", 'forward')}
                                     analyses={ANALYSES}
                                 />
                             )}
-                            {currentView === "newAnalysis" && (
-                                <NewAnalysis
-                                    onFinish={() => { setSelectedAnalysis(ANALYSES[0]); navigate("objectDetail", 'forward'); }}
-                                    onBack={() => navigate("home", 'back')}
-                                    hideHeader
-                                />
-                            )}
+
                             {currentView === "objectDetail" && selectedAnalysis && (
                                 <ObjectDetail
                                     analysis={selectedAnalysis}
