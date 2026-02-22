@@ -20,13 +20,15 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
     const [email, setEmail] = useState('');
     const [searchState, setSearchState] = useState<SearchState>('idle');
     const [foundUser, setFoundUser] = useState<typeof KNOWN_USERS[0] | null>(null);
+    const [firstName, setFirstName] = useState('Elin');
+    const [lastName, setLastName] = useState('Svensson');
 
     // ── Financial inputs ──
-    const [income, setIncome] = useState('');
+    const [income, setIncome] = useState('45 000');
     const [partnerIncome, setPartnerIncome] = useState('');
-    const [savings, setSavings] = useState('');
-    const [lanelofte, setLanelofte] = useState('');
-    const [loans, setLoans] = useState('');
+    const [savings, setSavings] = useState('800 000');
+    const [lanelofte, setLanelofte] = useState('4 500 000');
+    const [loans, setLoans] = useState('3 500');
 
     // Format a numeric string with Swedish thousands separators on blur
     const formatCurrency = (val: string) => {
@@ -38,6 +40,12 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
 
     const handleFinish = () => {
         haptic('light');
+        // Save user name to context
+        dispatch({
+            type: 'SET_USER_NAME',
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+        });
         // Save user financials to context
         dispatch({
             type: 'SET_USER_FINANCIALS',
@@ -119,8 +127,8 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
                                 <label className="text-[13px] font-semibold text-text-main dark:text-white">Om dig</label>
                             </div>
                             <div className="space-y-2">
-                                <input type="text" placeholder="Förnamn" className={inputClass} />
-                                <input type="text" placeholder="Efternamn" className={inputClass} />
+                                <input type="text" placeholder="Förnamn" value={firstName} onChange={(e) => setFirstName(e.target.value)} className={inputClass} />
+                                <input type="text" placeholder="Efternamn" value={lastName} onChange={(e) => setLastName(e.target.value)} className={inputClass} />
                             </div>
                         </div>
 

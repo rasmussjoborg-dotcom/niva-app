@@ -13,8 +13,8 @@ export const Profile = ({ onBack, hideHeader }: ProfileProps) => {
     const { state, dispatch, combinedIncome, combinedSavings, combinedLoans, isHousehold } = useHousehold();
 
     const [isEditingName, setIsEditingName] = useState(false);
-    const [firstName, setFirstName] = useState('Anna');
-    const [lastName, setLastName] = useState('Lindqvist');
+    const [firstName, setFirstName] = useState(state.firstName || 'Anna');
+    const [lastName, setLastName] = useState(state.lastName || 'Lindqvist');
 
     // Ekonomisk profil state (local display values)
     const [adults, setAdults] = useState<1 | 2>(1);
@@ -399,6 +399,23 @@ export const Profile = ({ onBack, hideHeader }: ProfileProps) => {
                                 {isHousehold && state.partner && (
                                     <p className="text-[12px] text-text-muted mt-2 tabular-nums">Din: {mask(formatKr(state.user.savings))} kr · Partner: {mask(formatKr(state.partner.savings))} kr</p>
                                 )}
+                            </div>
+                            <Divider />
+
+                            {/* Lånelöfte */}
+                            <div className="px-5 py-4">
+                                <label className="text-[11px] font-semibold uppercase tracking-wider text-text-muted mb-2 block">
+                                    Lånelöfte
+                                </label>
+                                <div className="relative flex items-center">
+                                    <input
+                                        className="w-full bg-surface-input dark:bg-border-dark rounded-2xl p-4 pr-12 text-lg font-semibold text-black dark:text-white tabular-nums outline-none"
+                                        value={state.user.lanelofte > 0 ? mask(formatKr(state.user.lanelofte)) : 'Ej angivet'}
+                                        readOnly
+                                    />
+                                    {state.user.lanelofte > 0 && <span className="absolute right-4 text-[13px] font-medium text-text-muted">kr</span>}
+                                </div>
+                                <p className="text-[12px] text-text-muted mt-2">Maxbeloppet banken godkänt att låna ut.</p>
                             </div>
                             <Divider />
 

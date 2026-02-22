@@ -25,11 +25,14 @@ export interface HouseholdState {
     partnerIntent: 'solo' | 'partner' | null;
     partner: PartnerData | null;
     user: UserFinancials;
+    firstName: string;
+    lastName: string;
 }
 
 type HouseholdAction =
     | { type: 'SET_PARTNER_INTENT'; intent: 'solo' | 'partner' }
     | { type: 'SET_USER_FINANCIALS'; financials: UserFinancials }
+    | { type: 'SET_USER_NAME'; firstName: string; lastName: string }
     | { type: 'LINK_PARTNER'; partner: Omit<PartnerData, 'linked'> }
     | { type: 'UNLINK_PARTNER' }
     | { type: 'UPDATE_PARTNER_FINANCIALS'; financials: Partial<Pick<PartnerData, 'income' | 'savings' | 'loans'>> };
@@ -46,6 +49,8 @@ const defaultState: HouseholdState = {
         loans: 0,
         lanelofte: 0,
     },
+    firstName: '',
+    lastName: '',
 };
 
 // ── Reducer ──
@@ -57,6 +62,9 @@ function householdReducer(state: HouseholdState, action: HouseholdAction): House
 
         case 'SET_USER_FINANCIALS':
             return { ...state, user: action.financials };
+
+        case 'SET_USER_NAME':
+            return { ...state, firstName: action.firstName, lastName: action.lastName };
 
         case 'LINK_PARTNER': {
             const partner: PartnerData = { ...action.partner, linked: true };
