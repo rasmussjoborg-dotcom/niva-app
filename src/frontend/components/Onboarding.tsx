@@ -21,6 +21,54 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
     const [searchState, setSearchState] = useState<SearchState>('idle');
     const [foundUser, setFoundUser] = useState<typeof KNOWN_USERS[0] | null>(null);
 
+    // ── Financial inputs ──
+    const [income, setIncome] = useState('');
+    const [partnerIncome, setPartnerIncome] = useState('');
+    const [savings, setSavings] = useState('');
+    const [lanelofte, setLanelofte] = useState('');
+    const [loans, setLoans] = useState('');
+
+    // Format a numeric string with Swedish thousands separators on blur
+    const formatCurrency = (val: string) => {
+        const num = parseInt(val.replace(/\s/g, ''), 10);
+        if (isNaN(num)) return val;
+        return new Intl.NumberFormat('sv-SE').format(num);
+    };
+    const parseNum = (val: string) => parseInt(val.replace(/\s/g, ''), 10) || 0;
+
+    const handleFinish = () => {
+        haptic('light');
+        // Save user financials to context
+        dispatch({
+            type: 'SET_USER_FINANCIALS',
+            financials: {
+                income: parseNum(income),
+                savings: parseNum(savings),
+                loans: parseNum(loans),
+                lanelofte: parseNum(lanelofte),
+            },
+        });
+        // If buying together but partner NOT linked via search, create a simple partner entry
+        if (buyingTogether && searchState !== 'linked') {
+            const pIncome = parseNum(partnerIncome);
+            if (pIncome > 0) {
+                dispatch({
+                    type: 'LINK_PARTNER',
+                    partner: {
+                        name: 'Min partner',
+                        avatarUrl: 'https://i.pravatar.cc/150?u=partner-default',
+                        income: pIncome,
+                        savings: 0,
+                        loans: 0,
+                    },
+                });
+            }
+        }
+        onFinish();
+    };
+
+    const inputClass = "w-full bg-surface-input dark:bg-surface-dark rounded-2xl px-5 py-4 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 transition-all outline-none";
+
     const handleSearch = () => {
         if (!email.includes('@')) return;
         setSearchState('searching');
@@ -46,8 +94,6 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
         haptic('light');
         setSearchState('invited');
     };
-
-    const inputClass = "w-full bg-surface-input dark:bg-surface-dark rounded-2xl px-5 py-4 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 transition-all outline-none";
 
     return (
         <div className="w-full h-full text-text-main dark:text-white overflow-hidden flex flex-col">
@@ -223,7 +269,7 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
                                 <label className="text-[13px] font-semibold text-text-main dark:text-white">Din inkomst efter skatt</label>
                             </div>
                             <div className="relative flex items-center">
-                                <input className={`${inputClass} pr-12 text-xl font-bold tabular-nums`} placeholder="35 000" type="text" inputMode="numeric" pattern="[0-9]*" />
+                                <input className={`${inputClass} pr-12 text-xl font-bold tabular-nums`} placeholder="35 000" type="text" inputMode="numeric" pattern="[0-9]*" value={income} onChange={(e) => setIncome(e.target.value.replace(/[^\d\s]/g, ''))} onBlur={() => setIncome(formatCurrency(income))} />
                                 <span className="absolute right-5 text-[15px] font-medium text-text-muted">kr</span>
                             </div>
                             <p className="text-[12px] text-text-muted text-pretty mt-3">Din lön efter skatt. Inkludera stabila extrainkomster.</p>
@@ -239,7 +285,7 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
                                     <label className="text-[13px] font-semibold text-text-main dark:text-white">Din partners inkomst efter skatt</label>
                                 </div>
                                 <div className="relative flex items-center">
-                                    <input className={`${inputClass} pr-12 text-xl font-bold tabular-nums`} placeholder="30 000" type="text" inputMode="numeric" pattern="[0-9]*" />
+                                    <input className={`${inputClass} pr-12 text-xl font-bold tabular-nums`} placeholder="30 000" type="text" inputMode="numeric" pattern="[0-9]*" value={partnerIncome} onChange={(e) => setPartnerIncome(e.target.value.replace(/[^\d\s]/g, ''))} onBlur={() => setPartnerIncome(formatCurrency(partnerIncome))} />
                                     <span className="absolute right-5 text-[15px] font-medium text-text-muted">kr</span>
                                 </div>
                                 <p className="text-[12px] text-text-muted text-pretty mt-3">Uppskatta om du inte vet exakt.</p>
@@ -257,13 +303,30 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
                                 </label>
                             </div>
                             <div className="relative">
-                                <input className={`${inputClass} pr-14 text-xl font-bold tabular-nums`} placeholder="500 000" type="text" inputMode="numeric" pattern="[0-9]*" />
+                                <input className={`${inputClass} pr-14 text-xl font-bold tabular-nums`} placeholder="500 000" type="text" inputMode="numeric" pattern="[0-9]*" value={savings} onChange={(e) => setSavings(e.target.value.replace(/[^\d\s]/g, ''))} onBlur={() => setSavings(formatCurrency(savings))} />
                                 <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[15px] font-medium text-text-muted">kr</span>
                             </div>
                             <p className="text-[12px] text-text-muted text-pretty mt-3">
                                 {buyingTogether
                                     ? 'Ert totala sparkapital som kan användas till kontantinsats.'
                                     : 'Detta sätter taket för din kontantinsats.'}
+                            </p>
+                        </div>
+
+                        {/* ── Lånelöfte Card ── */}
+                        <div className="bg-white dark:bg-surface-dark rounded-2xl p-5 border border-border-light animate-slide-up stagger-4">
+                            <div className="flex items-center gap-2.5 mb-4">
+                                <div className="size-8 rounded-xl bg-primary-soft dark:bg-primary/20 flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-[18px] text-primary">verified</span>
+                                </div>
+                                <label className="text-[13px] font-semibold text-text-main dark:text-white">Lånelöfte</label>
+                            </div>
+                            <div className="relative">
+                                <input className={`${inputClass} pr-14 text-xl font-bold tabular-nums`} placeholder="4 000 000" type="text" inputMode="numeric" pattern="[0-9]*" value={lanelofte} onChange={(e) => setLanelofte(e.target.value.replace(/[^\d\s]/g, ''))} onBlur={() => setLanelofte(formatCurrency(lanelofte))} />
+                                <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[15px] font-medium text-text-muted">kr</span>
+                            </div>
+                            <p className="text-[12px] text-text-muted text-pretty mt-3">
+                                Maxbeloppet banken är villig att låna ut till dig. Kontakta din bank om du inte har ett.
                             </p>
                         </div>
 
@@ -278,7 +341,7 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
                                 </label>
                             </div>
                             <div className="relative">
-                                <input className={`${inputClass} pr-24 text-xl font-bold tabular-nums`} placeholder="0" type="text" inputMode="numeric" pattern="[0-9]*" />
+                                <input className={`${inputClass} pr-24 text-xl font-bold tabular-nums`} placeholder="0" type="text" inputMode="numeric" pattern="[0-9]*" value={loans} onChange={(e) => setLoans(e.target.value.replace(/[^\d\s]/g, ''))} onBlur={() => setLoans(formatCurrency(loans))} />
                                 <span className="absolute right-5 top-1/2 -translate-y-1/2 text-[15px] font-medium text-text-muted">kr/mån</span>
                             </div>
                             <p className="text-[12px] text-text-muted text-pretty mt-3">
@@ -290,7 +353,7 @@ export const Onboarding = ({ onFinish }: { onFinish: () => void }) => {
                     </div>
 
                     <button
-                        onClick={() => { haptic('light'); onFinish(); }}
+                        onClick={handleFinish}
                         className="w-full bg-primary text-white py-4 rounded-2xl text-[15px] font-semibold active:scale-[0.98] transition-transform cursor-pointer mt-6 mb-8"
                     >
                         Klar — visa mig resultatet

@@ -2,8 +2,24 @@ import React, { useState } from 'react';
 import { useHousehold } from '../context/HouseholdContext';
 import type { AnalysisData } from '../types';
 
+interface ScrapedListing {
+    address: string;
+    area: string;
+    price: string;
+    priceRaw: number;
+    avgift: string;
+    rooms: string;
+    sqm: string;
+    floor: string;
+    brfName: string;
+    constructionYear: string;
+    imageUrl: string;
+    hemnetUrl: string;
+}
+
 interface HomeProps {
     onNewAnalysis: () => void;
+    onScrapedListing: (listing: ScrapedListing) => void;
     onOpenAnalysis: (index: number) => void;
     onOpenProfile: () => void;
     analyses: AnalysisData[];
@@ -17,16 +33,45 @@ const CARD_INSIGHTS = [
 
 const USER_AVATAR = 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWzmKf6lHJw9jFDvZTe2EKWjI_yIbuHl08kvULqvVvsShnOBTiHhLStTiWAWEwUfkuUbQEym6VtQlWpfCYPOt1VYsJqBW8b17L4vSG69_jurg1DmOP8cIFsJJ0aI0re5a-tiVou1bWnfjIt4l0LxJzL3wCqeTSawheQWgUdLBKtwxxeMQxBBZUfQYd5hlZ7L3zH-RcYaY030cDlEP0jHZvmVyIcYyf0vGPo0ZkrMZYGma9GUl8gG0CPFc5Nw3BpeWj94EsvRWmTw';
 
-export const Home = ({ onNewAnalysis, onOpenAnalysis, onOpenProfile, analyses }: HomeProps) => {
+export const Home = ({ onNewAnalysis, onScrapedListing, onOpenAnalysis, onOpenProfile, analyses }: HomeProps) => {
     const { state, isHousehold } = useHousehold();
     const isPartnerLinked = isHousehold && state.partner?.linked;
     const [fetchState, setFetchState] = useState<'idle' | 'loading' | 'done'>('idle');
+    const [url, setUrl] = useState('');
+    const [error, setError] = useState('');
+    const [scrapedListing, setScrapedListing] = useState<ScrapedListing | null>(null);
 
-    const handleFetch = () => {
+    const handlePaste = async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) { setUrl(text); setError(''); }
+        } catch { /* clipboard not available */ }
+    };
+
+    const handleFetch = async () => {
+        const trimmed = url.trim();
+        if (!trimmed) { setError('Klistra in en länk först'); return; }
+        if (!trimmed.includes('hemnet.se') && !trimmed.includes('booli.se')) { setError('Länken måste vara från hemnet.se eller booli.se'); return; }
+
         setFetchState('loading');
-        setTimeout(() => {
+        setError('');
+        try {
+            const res = await fetch('/api/scrape', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: trimmed }),
+            });
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({ error: 'Okänt fel' }));
+                throw new Error(data.error || `Fel ${res.status}`);
+            }
+            const listing: ScrapedListing = await res.json();
+            setScrapedListing(listing);
             setFetchState('done');
-        }, 2500);
+        } catch (err: any) {
+            setError(err.message || 'Kunde inte hämta bostadsdata');
+            setFetchState('idle');
+        }
     };
 
     return (
@@ -69,11 +114,25 @@ export const Home = ({ onNewAnalysis, onOpenAnalysis, onOpenProfile, analyses }:
                                 </div>
                             </div>
                             <div className="relative">
-                                <input className="w-full h-[56px] bg-surface-input dark:bg-surface-dark rounded-2xl px-5 pr-14 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-border-light dark:border-border-dark" id="property-link" placeholder="Klistra in mäklarlänken..." type="text" readOnly={fetchState !== 'idle'} />
-                                <button className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors">
+                                <input
+                                    className="w-full h-[56px] bg-surface-input dark:bg-surface-dark rounded-2xl px-5 pr-14 text-[15px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 outline-none transition-all border border-border-light dark:border-border-dark"
+                                    id="property-link"
+                                    placeholder="https://www.booli.se/bostad/..."
+                                    type="url"
+                                    value={url}
+                                    onChange={(e) => { setUrl(e.target.value); setError(''); if (fetchState === 'done') { setFetchState('idle'); setScrapedListing(null); } }}
+                                    readOnly={fetchState === 'loading'}
+                                />
+                                <button onClick={handlePaste} className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors active:scale-95">
                                     <span className="material-symbols-outlined text-[22px]">content_paste</span>
                                 </button>
                             </div>
+                            {error && (
+                                <div className="flex items-center gap-2 px-1">
+                                    <span className="material-symbols-outlined text-red-500 text-[16px]">error</span>
+                                    <p className="text-[13px] text-red-500 font-medium">{error}</p>
+                                </div>
+                            )}
                             {fetchState === 'idle' && (
                                 <button onClick={handleFetch} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
                                     <span className="material-symbols-outlined text-[22px]">search</span>
@@ -85,73 +144,58 @@ export const Home = ({ onNewAnalysis, onOpenAnalysis, onOpenProfile, analyses }:
                                     <span className="material-symbols-outlined text-primary text-[20px] animate-spin">sync</span>
                                     <div>
                                         <p className="text-[14px] font-semibold text-text-main dark:text-white">Hämtar bostadsdata…</p>
-                                        <p className="text-[12px] text-text-muted">Sibyllegatan 14, Stockholm</p>
+                                        <p className="text-[12px] text-text-muted">{url.length > 45 ? url.slice(0, 42) + '...' : url}</p>
                                     </div>
                                 </div>
                             )}
 
                             {/* ── Fetch Results (inside same card) ── */}
-                            {fetchState === 'done' && (
+                            {fetchState === 'done' && scrapedListing && (
                                 <div className="animate-slide-up space-y-4">
                                     <hr className="border-border-light dark:border-border-dark -mx-5" />
+                                    {/* Property preview */}
+                                    {scrapedListing.imageUrl && (
+                                        <div className="rounded-xl overflow-hidden aspect-[16/9]">
+                                            <img src={scrapedListing.imageUrl} alt={scrapedListing.address} className="w-full h-full object-cover" />
+                                        </div>
+                                    )}
                                     <div>
                                         <h2 className="text-[18px] font-bold tracking-tight text-text-main dark:text-white leading-tight">Vi har hittat bostaden</h2>
-                                        <p className="text-[13px] text-text-secondary mt-1 font-medium">Sibyllegatan 14, Stockholm</p>
+                                        <p className="text-[13px] text-text-secondary mt-1 font-medium">{scrapedListing.address}{scrapedListing.area ? `, ${scrapedListing.area}` : ''}</p>
                                     </div>
-                                    <div className="space-y-3">
-                                        {/* Årsredovisning — found */}
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <span className="material-icons text-[20px] text-emerald-500">check_circle</span>
-                                                <span className="text-[14px] font-medium text-text-main dark:text-white">Årsredovisning</span>
+                                    {/* Property details */}
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {scrapedListing.price && (
+                                            <div className="bg-surface-input dark:bg-surface-dark rounded-xl p-3">
+                                                <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest mb-0.5">Pris</p>
+                                                <p className="text-[14px] font-bold text-text-main dark:text-white">{scrapedListing.price}</p>
                                             </div>
-                                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Hittad</span>
-                                        </div>
-                                        {/* Stadgar — found */}
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <span className="material-icons text-[20px] text-emerald-500">check_circle</span>
-                                                <span className="text-[14px] font-medium text-text-main dark:text-white">Stadgar</span>
+                                        )}
+                                        {scrapedListing.rooms && (
+                                            <div className="bg-surface-input dark:bg-surface-dark rounded-xl p-3">
+                                                <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest mb-0.5">Rum</p>
+                                                <p className="text-[14px] font-bold text-text-main dark:text-white">{scrapedListing.rooms}</p>
                                             </div>
-                                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Hittad</span>
-                                        </div>
-                                        {/* Ekonomisk plan — found */}
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <span className="material-icons text-[20px] text-emerald-500">check_circle</span>
-                                                <span className="text-[14px] font-medium text-text-main dark:text-white">Ekonomisk plan</span>
+                                        )}
+                                        {scrapedListing.sqm && (
+                                            <div className="bg-surface-input dark:bg-surface-dark rounded-xl p-3">
+                                                <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest mb-0.5">Storlek</p>
+                                                <p className="text-[14px] font-bold text-text-main dark:text-white">{scrapedListing.sqm}</p>
                                             </div>
-                                            <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Hittad</span>
-                                        </div>
-                                        {/* Energideklaration — missing */}
-                                        <div className="flex items-center justify-between py-3 px-4 bg-amber-50/50 dark:bg-amber-500/5 rounded-2xl border border-amber-200/50 dark:border-amber-500/10">
-                                            <div className="flex items-center gap-3">
-                                                <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px]">error</span>
-                                                <span className="text-[14px] font-semibold text-text-main dark:text-white">Energideklaration</span>
+                                        )}
+                                        {scrapedListing.avgift && (
+                                            <div className="bg-surface-input dark:bg-surface-dark rounded-xl p-3">
+                                                <p className="text-[10px] text-text-muted font-semibold uppercase tracking-widest mb-0.5">Avgift</p>
+                                                <p className="text-[14px] font-bold text-text-main dark:text-white">{scrapedListing.avgift}</p>
                                             </div>
-                                            <span className="text-[10px] text-amber-700 dark:text-amber-400 font-semibold uppercase tracking-widest bg-amber-100 dark:bg-amber-500/10 px-2.5 py-1 rounded-lg">Saknas</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Manual upload */}
-                                    <div className="pt-1 space-y-3">
-                                        <label className="block text-[11px] font-semibold text-text-muted uppercase tracking-widest px-1">Hittade vi inte allt?</label>
-                                        <div className="flex gap-3">
-                                            <input className="flex-1 bg-surface-input dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-2xl px-4 py-3.5 text-[14px] text-text-main dark:text-white placeholder:text-text-placeholder focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Länk till PDF eller ladda upp…" type="text" />
-                                            <button className="shrink-0 bg-primary hover:bg-primary/90 text-white px-5 py-3.5 rounded-2xl text-[14px] font-semibold active:scale-[0.98] transition-all">
-                                                Lägg till
-                                            </button>
-                                        </div>
+                                        )}
                                     </div>
 
                                     {/* Continue button */}
-                                    <button onClick={onNewAnalysis} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
-                                        <span>Fortsätt till analys</span>
+                                    <button onClick={() => onScrapedListing(scrapedListing)} className="w-full h-[56px] bg-primary text-white font-semibold text-[15px] rounded-2xl flex items-center justify-center gap-3 active:scale-[0.98] transition-all">
+                                        <span>Se din kostnadsfria priskoll</span>
                                         <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
                                     </button>
-                                    <p className="text-center text-[12px] text-text-muted leading-relaxed">
-                                        Du kan lägga till saknade dokument senare.
-                                    </p>
                                 </div>
                             )}
                         </div>

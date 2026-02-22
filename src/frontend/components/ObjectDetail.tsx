@@ -8,24 +8,76 @@ import type { AnalysisData } from '../types';
 interface ObjectDetailProps {
     onBack: () => void;
     onOpenChat: () => void;
+    onRemove?: () => void;
     analysis: AnalysisData;
     hideHeader?: boolean;
 }
 
-export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: ObjectDetailProps) => {
-    const { combinedIncome, isHousehold, state } = useHousehold();
-    const [budniva, setBudniva] = useState(12.5);
-    const [kontantinsats, setKontantinsats] = useState(3.1);
+export const ObjectDetail = ({ onBack, onOpenChat, onRemove, analysis, hideHeader }: ObjectDetailProps) => {
+    const { combinedIncome, combinedSavings, combinedLoans, lanelofte, isHousehold, state } = useHousehold();
+
+    // Derive sensible defaults from user data + property data
+    const priceM = (analysis.priceRaw || 0) / 1_000_000;
+    const estimateM = (analysis.estimatePrice || 0) / 1_000_000;
+    const estimateHighM = (analysis.estimateHigh || 0) / 1_000_000;
+    const savingsM = combinedSavings / 1_000_000;
+    const parsedAvgift = parseInt((analysis.avgift || '').replace(/\s/g, '').replace(/kr.*/, ''), 10) || 4500;
+
+    // budnivå: prefer marknadsvärde (estimate), fall back to asking price
+    const referencePrice = estimateM > 0 ? estimateM : priceM > 0 ? priceM : 5;
+    // Cap default bid to what user can realistically afford (savings + lånelöfte)
+    // Use actual lånelöfte if provided, otherwise estimate from income
+    const estMaxLoan = lanelofte > 0 ? lanelofte : (combinedIncome / 0.70) * 12 * 4.5;
+    const maxAffordableM = (estMaxLoan / 1_000_000) + savingsM;
+    const defaultBud = combinedIncome > 0
+        ? Math.round(Math.min(referencePrice, maxAffordableM) * 10) / 10
+        : Math.round(referencePrice * 10) / 10;
+    // kontantinsats: user's actual savings (capped at bid level)
+    const defaultInsats = savingsM > 0 ? Math.min(Math.round(savingsM * 10) / 10, defaultBud) : Math.round(defaultBud * 0.15 * 10) / 10;
+    // slider bounds — cover from 60% of asking price to 20% above highest estimate
+    const highRef = Math.max(priceM, estimateHighM, referencePrice);
+    const budMin = Math.max(1, Math.floor(Math.min(priceM || referencePrice, referencePrice) * 0.6));
+    const budMax = Math.ceil(highRef * 1.2) || 15;
+
+    const [budniva, setBudniva] = useState(defaultBud);
+    const [kontantinsats, setKontantinsats] = useState(defaultInsats);
     const [ranta, setRanta] = useState(4.5);
-    const [avgift, setAvgift] = useState(4500);
+    const [avgift, setAvgift] = useState(parsedAvgift);
     const [isPremium, setIsPremium] = useState(false);
     const [showPayment, setShowPayment] = useState(false);
+    const [confirmRemove, setConfirmRemove] = useState(false);
     const isPartnerLinked = isHousehold && state.partner?.linked;
+
+    // Lånelöfte: use actual value from onboarding, or estimate from income
+    const maxLoan = lanelofte > 0 ? lanelofte : (combinedIncome / 0.70) * 12 * 4.5;
+    const hasRealLanelofte = lanelofte > 0;
 
     const loanAmount = (budniva * 1000000) - (kontantinsats * 1000000);
     const monthlyInterest = (loanAmount * (ranta / 100)) / 12;
-    const monthlyAmort = loanAmount > budniva * 700000 ? loanAmount * 0.02 / 12 : loanAmount * 0.01 / 12;
-    const pengarOver = combinedIncome - monthlyInterest - monthlyAmort - avgift;
+
+    // FI amortization: 3 tiers based on LTV
+    const ltv = budniva > 0 ? loanAmount / (budniva * 1_000_000) : 0;
+    const amortRate = ltv > 0.70 ? 0.02 : ltv > 0.50 ? 0.01 : 0;
+    const monthlyAmort = (loanAmount * amortRate) / 12;
+
+    // Ränteavdrag: 30% on first 100k/person/yr, 21% above (bolån with collateral)
+    const yearlyInterest = monthlyInterest * 12;
+    const persons = isHousehold ? 2 : 1;
+    const deductionCap = persons * 100_000;
+    const ranteavdrag30 = Math.min(yearlyInterest, deductionCap) * 0.30;
+    const ranteavdrag21 = Math.max(yearlyInterest - deductionCap, 0) * 0.21;
+    const monthlyRanteavdrag = (ranteavdrag30 + ranteavdrag21) / 12;
+
+    // Bolånetak: banks won't lend > 85% LTV
+    const belowBolanetak = kontantinsats / budniva < 0.15;
+
+    // Lånelöfte check: does the required loan exceed estimated max?
+    const exceedsLanelofte = loanAmount > maxLoan;
+
+    // Estimated living costs: Konsumentverket baseline
+    const livingCost = isHousehold ? 16000 : 10000;
+
+    const pengarOver = combinedIncome - monthlyInterest + monthlyRanteavdrag - monthlyAmort - avgift - combinedLoans - livingCost;
 
     const formatKr = (n: number) => new Intl.NumberFormat('sv-SE').format(Math.round(n));
     const formatMKr = (n: number) => new Intl.NumberFormat('sv-SE').format(Math.round(n));
@@ -203,12 +255,12 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
                                     </div>
                                     <input
                                         className="niva-slider w-full"
-                                        type="range" min="10" max="15" step="0.1"
+                                        type="range" min={budMin} max={budMax} step="0.1"
                                         value={budniva}
                                         onChange={(e) => { setBudniva(parseFloat(e.target.value)); haptic('selection'); }}
                                     />
                                     <div className="flex justify-between text-[11px] text-text-muted font-medium tabular-nums">
-                                        <span>10M</span><span>15M</span>
+                                        <span>{budMin}M</span><span>{budMax}M</span>
                                     </div>
                                 </div>
 
@@ -230,6 +282,20 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
                                         <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Behov av bolån</span>
                                         <span className="text-[15px] font-semibold tabular-nums">{formatKr(loanAmount)} kr</span>
                                     </div>
+                                    {belowBolanetak && (
+                                        <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-300 px-3 py-2.5 rounded-lg mt-2">
+                                            <span className="material-symbols-outlined text-[16px] mt-0.5">warning</span>
+                                            <span className="text-[12px] leading-snug">Banken kräver minst 15 % egen insats. Du behöver {formatKr(budniva * 0.15 * 1_000_000)} kr.</span>
+                                        </div>
+                                    )}
+                                    {exceedsLanelofte && (
+                                        <div className="flex items-start gap-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 px-3 py-2.5 rounded-lg mt-2">
+                                            <span className="material-symbols-outlined text-[16px] mt-0.5">block</span>
+                                            <span className="text-[12px] leading-snug">
+                                                Lånebehovet ({formatKr(loanAmount)} kr) överstiger {hasRealLanelofte ? 'ditt' : 'uppskattat'} lånelöfte ({formatKr(maxLoan)} kr).{!hasRealLanelofte && ' Baserat på ~4,5× bruttoinkomst.'}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Ränta */}
@@ -253,23 +319,46 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
                                     </div>
                                 </div>
 
-                                {/* Avgift */}
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-baseline">
-                                        <label className="text-[13px] text-text-muted font-medium">Månadsavgift</label>
-                                        <span className="text-[17px] font-semibold tabular-nums">
-                                            {formatKr(avgift)} <span className="text-[13px] text-text-muted">kr</span>
-                                        </span>
+                                {/* Avgift (fixed from listing) */}
+                                <div className="flex justify-between items-baseline py-2">
+                                    <label className="text-[13px] text-text-muted font-medium">Månadsavgift</label>
+                                    <span className="text-[17px] font-semibold tabular-nums">
+                                        {formatKr(avgift)} <span className="text-[13px] text-text-muted">kr</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Cost breakdown */}
+                            <div className="px-5 py-4 space-y-2.5 text-[13px]">
+                                <div className="flex justify-between">
+                                    <span className="text-text-muted">Ränta</span>
+                                    <span className="tabular-nums font-medium">−{formatKr(monthlyInterest)} kr</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-green-600 dark:text-green-400">Ränteavdrag</span>
+                                    <span className="tabular-nums font-medium text-green-600 dark:text-green-400">+{formatKr(monthlyRanteavdrag)} kr</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-text-muted">Amortering ({amortRate > 0 ? `${amortRate * 100}%` : '0%'})</span>
+                                    <span className="tabular-nums font-medium">{monthlyAmort > 0 ? `−${formatKr(monthlyAmort)}` : '0'} kr</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-text-muted">Avgift</span>
+                                    <span className="tabular-nums font-medium">−{formatKr(avgift)} kr</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-text-muted">Levnadskostnader (est.)</span>
+                                    <span className="tabular-nums font-medium">−{formatKr(livingCost)} kr</span>
+                                </div>
+                                {combinedLoans > 0 && (
+                                    <div className="flex justify-between">
+                                        <span className="text-text-muted">Befintliga lån</span>
+                                        <span className="tabular-nums font-medium">−{formatKr(combinedLoans)} kr</span>
                                     </div>
-                                    <input
-                                        className="niva-slider w-full"
-                                        type="range" min="1000" max="12000" step="100"
-                                        value={avgift}
-                                        onChange={(e) => { setAvgift(parseFloat(e.target.value)); haptic('selection'); }}
-                                    />
-                                    <div className="flex justify-between text-[11px] text-text-muted font-medium tabular-nums">
-                                        <span>1 000 kr</span><span>12 000 kr</span>
-                                    </div>
+                                )}
+                                <div className="border-t border-border-light dark:border-border-dark pt-2 mt-1 flex justify-between text-[12px] text-text-muted">
+                                    <span>Inkomst (netto)</span>
+                                    <span className="tabular-nums">{formatKr(combinedIncome)} kr/mån</span>
                                 </div>
                             </div>
 
@@ -281,7 +370,7 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
                                         {pengarOver >= 0 ? '+' : ''}{formatKr(pengarOver)} kr
                                     </span>
                                 </div>
-                                <p className="text-[12px] text-text-muted mt-2 leading-relaxed text-pretty">{isHousehold ? 'Beräknat för hela hushållet.' : 'Ränta, amortering, avgift och uppskattade levnadskostnader är inräknade.'}</p>
+                                <p className="text-[12px] text-text-muted mt-2 leading-relaxed text-pretty">Inkl. ränta, ränteavdrag, amortering, avgift och est. levnadskostnader.{isHousehold ? ' Beräknat för hela hushållet.' : ''}</p>
                             </div>
                         </div>
                     </div>
@@ -307,6 +396,39 @@ export const ObjectDetail = ({ onBack, onOpenChat, analysis, hideHeader }: Objec
                         </button>
                     )}
                 </div>
+
+                {/* Remove button */}
+                {onRemove && (
+                    <div className="px-5 pb-6">
+                        {!confirmRemove ? (
+                            <button
+                                onClick={() => { haptic('selection'); setConfirmRemove(true); }}
+                                className="w-full py-3.5 rounded-xl text-[14px] font-medium text-text-muted hover:text-red-500 transition-colors flex items-center justify-center gap-2"
+                            >
+                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                <span>Ta bort objekt</span>
+                            </button>
+                        ) : (
+                            <div className="space-y-2 animate-slide-up">
+                                <p className="text-center text-[13px] text-text-muted">Vill du ta bort denna analys?</p>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setConfirmRemove(false)}
+                                        className="flex-1 py-3 rounded-xl text-[14px] font-medium text-text-main dark:text-white bg-surface-input dark:bg-surface-dark border border-border-light dark:border-border-dark active:scale-[0.98] transition-all"
+                                    >
+                                        Avbryt
+                                    </button>
+                                    <button
+                                        onClick={() => { haptic('warning'); onRemove(); }}
+                                        className="flex-1 py-3 rounded-xl text-[14px] font-semibold text-white bg-red-500 active:scale-[0.98] transition-all"
+                                    >
+                                        Ta bort
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </main>
 
             {/* Payment Sheet */}

@@ -6,6 +6,7 @@ import { Onboarding } from "./components/Onboarding";
 import { PartnerInvite } from "./components/PartnerInvite";
 
 import { ObjectDetail } from "./components/ObjectDetail";
+import { NewAnalysis } from "./components/NewAnalysis";
 import { ObjectChat } from "./components/ObjectChat";
 import { Profile } from "./components/Profile";
 import { HouseholdProvider } from "./context/HouseholdContext";
@@ -15,11 +16,12 @@ import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { haptic } from "./utils/haptics";
 import type { AnalysisData } from "./types";
 
-type ViewType = "home" | "onboarding" | "partnerInvite" | "objectDetail" | "objectChat" | "profile";
+type ViewType = "home" | "onboarding" | "partnerInvite" | "newAnalysis" | "objectDetail" | "objectChat" | "profile";
 
 // Define which views are "root" (no swipe-back) and the back targets
 const VIEW_BACK_MAP: Partial<Record<ViewType, ViewType>> = {
 
+    newAnalysis: "home",
     objectDetail: "home",
     objectChat: "objectDetail",
     profile: "home",
@@ -31,7 +33,7 @@ const ROOT_VIEWS: ViewType[] = ["home", "onboarding"];
 
 
 
-const ANALYSES: AnalysisData[] = [
+const INITIAL_ANALYSES: AnalysisData[] = [
     {
         address: "Sibyllegatan 14",
         area: "Östermalm, Stockholm",
@@ -66,7 +68,9 @@ const ANALYSES: AnalysisData[] = [
 
 const App = () => {
     const [currentView, setCurrentView] = useState<ViewType>("onboarding");
+    const [analyses, setAnalyses] = useState<AnalysisData[]>(INITIAL_ANALYSES);
     const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisData | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState<number>(-1);
     const [navDirection, setNavDirection] = useState<'forward' | 'back'>('forward');
 
     const navigate = useCallback((to: ViewType, direction: 'forward' | 'back' = 'forward') => {
@@ -83,9 +87,86 @@ const App = () => {
     }, [currentView, navigate]);
 
     const handleOpenAnalysis = useCallback((index: number) => {
-        setSelectedAnalysis(ANALYSES[index]);
+        setSelectedAnalysis(analyses[index]);
+        setSelectedIndex(index);
+        navigate("objectDetail", 'forward');
+    }, [navigate, analyses]);
+
+    const handleScrapedListing = useCallback((listing: any) => {
+        const priceNum = listing.priceRaw || 0;
+        const priceMil = priceNum / 1_000_000;
+
+        // Build display price — use scraped formatted price if available
+        let displayPrice = listing.price || '';
+        if (!displayPrice && priceNum > 0) {
+            displayPrice = `${priceMil.toFixed(1)}M`;
+        } else if (!displayPrice) {
+            displayPrice = 'Kontakta mäklare';
+        }
+
+        // Valuation — use Booli's estimate if available, else rough heuristic
+        let valuation = '–';
+        if (listing.estimatePrice > 0) {
+            // Use Booli's own market valuation
+            const estMil = listing.estimatePrice / 1_000_000;
+            if (listing.estimateLow && listing.estimateHigh) {
+                const lowMil = (listing.estimateLow / 1_000_000).toFixed(1);
+                const highMil = (listing.estimateHigh / 1_000_000).toFixed(1);
+                valuation = `${lowMil}–${highMil}M`;
+            } else {
+                valuation = `~${estMil.toFixed(1)}M`;
+            }
+        } else if (priceNum > 0) {
+            // Fallback: rough ±5-15% of asking price
+            const lowMil = (priceMil * 1.05).toFixed(1);
+            const highMil = (priceMil * 1.15).toFixed(1);
+            valuation = `${lowMil}-${highMil}M`;
+        }
+
+        const sourceUrl = listing.hemnetUrl || listing.booliUrl || '';
+
+        const newAnalysis: AnalysisData = {
+            address: listing.address || 'Okänd adress',
+            area: listing.area || '',
+            price: displayPrice,
+            valuation,
+            brf: listing.brfName || '–',
+            marginal: '–',
+            imageUrl: listing.imageUrl || '/images/apartment-ostermalm.png',
+            unlocked: false,
+            hemnetUrl: listing.hemnetUrl,
+            booliUrl: listing.booliUrl,
+            sourceUrl,
+            source: listing.source || 'hemnet',
+            priceRaw: priceNum,
+            avgift: listing.avgift || '',
+            rooms: listing.rooms || '',
+            sqm: listing.sqm || '',
+            floor: listing.floor || '',
+            brfName: listing.brfName || '',
+            constructionYear: listing.constructionYear || '',
+            energyClass: listing.energyClass || '',
+            documents: listing.documents || [],
+            estimatePrice: listing.estimatePrice || 0,
+            estimateLow: listing.estimateLow || 0,
+            estimateHigh: listing.estimateHigh || 0,
+            estimatePricePerSqm: listing.estimatePricePerSqm || 0,
+        };
+        // Add to analyses list (prepend so it's first) and navigate
+        setAnalyses(prev => [newAnalysis, ...prev]);
+        setSelectedAnalysis(newAnalysis);
+        setSelectedIndex(0);
         navigate("objectDetail", 'forward');
     }, [navigate]);
+
+    const handleRemoveAnalysis = useCallback(() => {
+        if (selectedIndex >= 0) {
+            setAnalyses(prev => prev.filter((_, i) => i !== selectedIndex));
+        }
+        setSelectedAnalysis(null);
+        setSelectedIndex(-1);
+        navigate("home", 'back');
+    }, [selectedIndex, navigate]);
 
     const canSwipeBack = !ROOT_VIEWS.includes(currentView);
 
@@ -96,7 +177,7 @@ const App = () => {
     const renderHeader = () => {
         // Home has its own unique header (logo + avatar), keep it inside the component
         // Onboarding has progress dots, keep it inside
-        if (currentView === 'home' || currentView === 'onboarding') return null;
+        if (currentView === 'home' || currentView === 'onboarding' || currentView === 'newAnalysis') return null;
 
         let title = '';
         let onBackFn: (() => void) | undefined;
@@ -160,10 +241,17 @@ const App = () => {
                             )}
                             {currentView === "home" && (
                                 <Home
-                                    onNewAnalysis={() => { setSelectedAnalysis(ANALYSES[0]); navigate("objectDetail", 'forward'); }}
+                                    onNewAnalysis={() => navigate("newAnalysis", 'forward')}
+                                    onScrapedListing={handleScrapedListing}
                                     onOpenAnalysis={handleOpenAnalysis}
                                     onOpenProfile={() => navigate("profile", 'forward')}
-                                    analyses={ANALYSES}
+                                    analyses={analyses}
+                                />
+                            )}
+                            {currentView === "newAnalysis" && (
+                                <NewAnalysis
+                                    onFinish={() => navigate("home", 'back')}
+                                    onBack={() => navigate("home", 'back')}
                                 />
                             )}
 
@@ -172,6 +260,7 @@ const App = () => {
                                     analysis={selectedAnalysis}
                                     onBack={() => navigate("home", 'back')}
                                     onOpenChat={() => navigate("objectChat", 'forward')}
+                                    onRemove={handleRemoveAnalysis}
                                     hideHeader
                                 />
                             )}

@@ -15,6 +15,7 @@ export interface UserFinancials {
     income: number;
     savings: number;
     loans: number;
+    lanelofte: number;
 }
 
 export interface HouseholdState {
@@ -40,9 +41,10 @@ const defaultState: HouseholdState = {
     partnerIntent: null,
     partner: null,
     user: {
-        income: 55000,
-        savings: 1500000,
-        loans: 3200,
+        income: 0,
+        savings: 0,
+        loans: 0,
+        lanelofte: 0,
     },
 };
 
@@ -91,6 +93,8 @@ interface HouseholdContextValue {
     combinedSavings: number;
     /** Combined monthly loans */
     combinedLoans: number;
+    /** User's lånelöfte from their bank */
+    lanelofte: number;
     /** Whether household mode is active */
     isHousehold: boolean;
 }
@@ -106,9 +110,10 @@ export const HouseholdProvider = ({ children }: { children: ReactNode }) => {
     const combinedIncome = state.user.income + (isHousehold && state.partner ? state.partner.income : 0);
     const combinedSavings = state.user.savings + (isHousehold && state.partner ? state.partner.savings : 0);
     const combinedLoans = state.user.loans + (isHousehold && state.partner ? state.partner.loans : 0);
+    const lanelofte = state.user.lanelofte;
 
     return (
-        <HouseholdContext.Provider value={{ state, dispatch, combinedIncome, combinedSavings, combinedLoans, isHousehold }}>
+        <HouseholdContext.Provider value={{ state, dispatch, combinedIncome, combinedSavings, combinedLoans, lanelofte, isHousehold }}>
             {children}
         </HouseholdContext.Provider>
     );
