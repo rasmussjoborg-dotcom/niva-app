@@ -70,6 +70,7 @@ const PORT = parseInt(process.env.PORT || "3002");
 
 Bun.serve({
     port: PORT,
+    hostname: "0.0.0.0", // Required for Docker/Railway — bind to all interfaces
     idleTimeout: 120, // BRF analysis can take 30-90s (PDF download + Gemini)
     routes: {
         // SPA entry
