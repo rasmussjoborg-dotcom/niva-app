@@ -175,12 +175,12 @@ body {
         z-index: 100 !important;
     }
 
-    /* Sheet overlay: full width on mobile */
+    /* Sheet overlay: full viewport on mobile */
     .sheet-overlay {
-        max-width: 100%;
-        left: 0;
-        right: 0;
-        transform: none;
+        inset: 0 !important;
+        max-width: none !important;
+        width: 100% !important;
+        transform: none !important;
     }
 
     /* Sheet panel: full width, slide up from bottom */
@@ -251,7 +251,7 @@ input {
 
     .container {
         max-width: 100%;
-        padding: var(--space-3) var(--space-3);
+        padding: var(--space-3) 14px;
     }
 }
 
