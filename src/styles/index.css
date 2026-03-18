@@ -182,7 +182,7 @@ body {
         transform: none;
     }
 
-    /* Sheet panel: full width on mobile */
+    /* Sheet panel: full width, slide up from bottom */
     .sheet-panel {
         max-width: 100%;
         left: 0;
@@ -201,7 +201,7 @@ body {
         left: 0 !important;
         right: 0 !important;
         padding-top: env(safe-area-inset-top, 0px) !important;
-        z-index: 90 !important;
+        z-index: 110 !important;
     }
 
     /* Add top padding to screens to clear the fixed TopBar */
