@@ -640,7 +640,8 @@ Bun.serve({
 
                     return json({ message: response });
                 } catch (err: any) {
-                    return json({ error: err.message }, 400);
+                    console.error("Chat error:", err?.message, err?.status, err?.statusInfo);
+                    return json({ error: err.message || "Chat failed" }, 500);
                 }
             })();
         }
