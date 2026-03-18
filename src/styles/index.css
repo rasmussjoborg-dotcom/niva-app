@@ -146,13 +146,63 @@ body {
     body {
         padding: 0;
         background: var(--color-bg);
+        align-items: stretch;
     }
 
     #root {
+        width: 100%;
+        max-width: 100%;
         border-radius: 0;
         box-shadow: none;
         max-height: none;
         min-height: 100dvh;
+    }
+
+    .screen {
+        min-height: 100dvh;
+        padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px) + var(--space-6));
+    }
+
+    /* Bottom nav: fixed on mobile for reliable pinning */
+    .bottom-nav-mobile {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: auto !important;
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+        z-index: 100 !important;
+    }
+
+    /* Sheet overlay: full width on mobile */
+    .sheet-overlay {
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        transform: none;
+    }
+
+    /* Sheet panel: full width on mobile */
+    .sheet-panel {
+        max-width: 100%;
+        left: 0;
+        right: 0;
+        transform: translateY(100%);
+    }
+
+    .sheet-panel.open {
+        transform: translateY(0);
+    }
+
+    /* TopBar safe area */
+    .top-bar-mobile {
+        padding-top: env(safe-area-inset-top, 0px) !important;
+    }
+
+    /* Prevent content from going under notch */
+    .container {
+        padding-left: max(var(--space-5), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--space-5), env(safe-area-inset-right, 0px));
     }
 }
 

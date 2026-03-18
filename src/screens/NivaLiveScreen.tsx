@@ -137,7 +137,7 @@ export function NivaLiveScreen() {
     if (loading) {
         return (
             <div style={{
-                height: "var(--device-height)",
+                minHeight: "100dvh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -162,7 +162,7 @@ export function NivaLiveScreen() {
 
     return (
         <div style={{
-            height: "var(--device-height)",
+            minHeight: "100dvh",
             display: "flex",
             flexDirection: "column",
             background: "#1A1F24",

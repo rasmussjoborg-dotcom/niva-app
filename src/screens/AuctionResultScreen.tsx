@@ -37,7 +37,7 @@ export function AuctionResultScreen() {
     if (loading) {
         return (
             <div style={{
-                height: "var(--device-height)",
+                minHeight: "100dvh",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -57,7 +57,7 @@ export function AuctionResultScreen() {
 
     return (
         <div style={{
-            height: "var(--device-height)",
+            minHeight: "100dvh",
             display: "flex",
             flexDirection: "column",
             background: "var(--color-bg)",
@@ -235,7 +235,9 @@ export function AuctionResultScreen() {
                     <>
                         <button
                             className="btn btn-primary btn-lg btn-block"
-                            onClick={() => alert("Rapport genereras...")}
+                            onClick={() => {/* Coming soon — bank report export */}}
+                            disabled
+                            title="Kommer snart"
                         >
                             Exportera rapport till banken
                         </button>

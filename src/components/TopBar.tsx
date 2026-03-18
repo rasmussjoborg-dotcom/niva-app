@@ -19,16 +19,20 @@ export function TopBar({ title, rightAction }: TopBarProps) {
     useEffect(() => {
         const root = document.getElementById("root");
         if (!root) return;
-        const handleScroll = () => setScrolled(root.scrollTop > 20);
+        const handleScroll = () => setScrolled((root.scrollTop || window.scrollY) > 20);
         root.addEventListener("scroll", handleScroll, { passive: true });
-        return () => root.removeEventListener("scroll", handleScroll);
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => {
+            root.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("scroll", handleScroll);
+        };
     }, []);
 
     // Root screens: no top bar
     if (isRootScreen) return null;
 
     return (
-        <div style={{
+        <div className="top-bar-mobile" style={{
             position: "sticky",
             top: 0,
             left: 0,

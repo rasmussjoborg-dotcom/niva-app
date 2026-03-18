@@ -88,7 +88,7 @@ export function OnboardingScreen({ onComplete }: OnboardingScreenProps) {
 
     return (
         <div style={{
-            height: "var(--device-height)",
+            minHeight: "100dvh",
             display: "flex",
             flexDirection: "column",
             background: "var(--color-bg)",

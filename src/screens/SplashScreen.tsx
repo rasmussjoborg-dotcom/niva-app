@@ -7,7 +7,7 @@ interface SplashScreenProps {
 export function SplashScreen({ onContinue }: SplashScreenProps) {
     return (
         <div style={{
-            height: "var(--device-height)",
+            minHeight: "100dvh",
             display: "flex",
             flexDirection: "column",
             background: "var(--color-bg)",

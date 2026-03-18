@@ -5,6 +5,10 @@ import { OnboardingScreen } from "./screens/OnboardingScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
 import { ObjectTeaserScreen } from "./screens/ObjectTeaserScreen";
 import { AIChatScreen } from "./screens/AIChatScreen";
+import { BudSimulatorScreen } from "./screens/BudSimulatorScreen";
+import { NivaLiveScreen } from "./screens/NivaLiveScreen";
+import { AuctionResultScreen } from "./screens/AuctionResultScreen";
+import { CalculatorScreen } from "./screens/CalculatorScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { getSession as fetchSession } from "./hooks/useApi";
 import type { UserData } from "./hooks/useApi";
@@ -97,6 +101,10 @@ function AppInner() {
                         <Route path="/" element={<DashboardScreen />} />
                         <Route path="/analys/:id" element={<ObjectTeaserScreen />} />
                         <Route path="/analys/:id/chat" element={<AIChatScreen />} />
+                        <Route path="/analys/:id/simulator" element={<BudSimulatorScreen />} />
+                        <Route path="/analys/:id/live" element={<NivaLiveScreen />} />
+                        <Route path="/analys/:id/resultat" element={<AuctionResultScreen />} />
+                        <Route path="/analys/:id/kalkyl" element={<CalculatorScreen />} />
                         <Route path="/profil" element={<ProfileScreen />} />
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
