@@ -209,23 +209,28 @@ export function ObjectTeaserScreen() {
         if (!analysis) return;
         setAnalyzing(true);
         try {
-            // Only run BRF if not already done, OR if a new PDF was manually selected
-            if (!brfData || selectedPdf) {
-                const result = await analyzePdf(analysis.property_id, {
-                    pdf_url: selectedPdf?.url,
-                    pdf_base64: selectedPdf?.base64,
-                });
-                setBrfData(result);
-            }
-            // Persist payment status
+            // Always persist payment status first — this must succeed
             await unlockAnalysis(analysis.id);
             const updated = await getAnalysis(analysis.id);
             setAnalysis(updated);
             setIsPremium(true);
+
+            // Then attempt BRF analysis (optional — may fail if no PDF)
+            try {
+                if (!brfData || selectedPdf) {
+                    const result = await analyzePdf(analysis.property_id, {
+                        pdf_url: selectedPdf?.url,
+                        pdf_base64: selectedPdf?.base64,
+                    });
+                    setBrfData(result);
+                }
+            } catch (pdfErr) {
+                console.warn("BRF analysis skipped or failed:", pdfErr);
+                // Premium is already unlocked — just no BRF data yet
+            }
         } catch (err) {
-            console.error("Payment/BRF analysis failed:", err);
-            // Optionally set uploadError so user sees it failed
-            setUploadError("Kunde inte analysera PDF. Försök igen.");
+            console.error("Payment unlock failed:", err);
+            setUploadError("Betalningen kunde inte genomföras. Försök igen.");
         } finally {
             setTimeout(() => setAnalyzing(false), 1500);
         }

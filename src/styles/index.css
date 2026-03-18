@@ -194,15 +194,25 @@ body {
         transform: translateY(0);
     }
 
-    /* TopBar safe area */
+    /* TopBar: fixed on mobile for reliable sticky behavior */
     .top-bar-mobile {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
         padding-top: env(safe-area-inset-top, 0px) !important;
+        z-index: 90 !important;
+    }
+
+    /* Add top padding to screens to clear the fixed TopBar */
+    .screen {
+        padding-top: calc(64px + env(safe-area-inset-top, 0px));
     }
 
     /* Prevent content from going under notch */
     .container {
-        padding-left: max(var(--space-5), env(safe-area-inset-left, 0px));
-        padding-right: max(var(--space-5), env(safe-area-inset-right, 0px));
+        padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
     }
 }
 
