@@ -211,8 +211,8 @@ body {
 
     /* Prevent content from going under notch */
     .container {
-        padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
-        padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
+        padding-left: max(var(--space-3), env(safe-area-inset-left, 0px));
+        padding-right: max(var(--space-3), env(safe-area-inset-right, 0px));
     }
 }
 

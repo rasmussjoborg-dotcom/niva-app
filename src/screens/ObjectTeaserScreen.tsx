@@ -336,7 +336,6 @@ export function ObjectTeaserScreen() {
                     }
                 />
 
-                {analyzing && <AnalysisLoadingScreen address={analysis.address} />}
 
                 {analysis.image_url && (
                     <div style={{ position: "relative" }}>
@@ -786,7 +785,9 @@ export function ObjectTeaserScreen() {
                     {/* ═══════════════════════════════════════════════════════
                     PREMIUM GATE — Showcase + Frosted Teasers
                    ═══════════════════════════════════════════════════════ */}
-                    {!isPremium ? (
+                    {analyzing ? (
+                        <AnalysisLoadingScreen address={analysis.address} />
+                    ) : !isPremium ? (
                         <>
                             {/* Premium Showcase Card */}
                             <div className="premium-showcase" style={{ marginBottom: "var(--space-5)" }}>
