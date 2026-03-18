@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 type PaywallStep = "confirm" | "processing" | "success";
 
@@ -11,10 +11,17 @@ interface PaywallSheetProps {
 
 export function PaywallSheet({ isOpen, address, onClose, onPaymentComplete }: PaywallSheetProps) {
     const [step, setStep] = useState<PaywallStep>("confirm");
+    const [dragY, setDragY] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const startY = useRef(0);
+    const panelRef = useRef<HTMLDivElement>(null);
 
-    // Reset step when sheet opens
+    // Reset step and drag when sheet opens
     useEffect(() => {
-        if (isOpen) setStep("confirm");
+        if (isOpen) {
+            setStep("confirm");
+            setDragY(0);
+        }
     }, [isOpen]);
 
     function handlePay(method: "apple" | "swish") {
@@ -30,6 +37,34 @@ export function PaywallSheet({ isOpen, address, onClose, onPaymentComplete }: Pa
         }, 2000);
     }
 
+    // ── Swipe-to-dismiss handlers ──
+    function onTouchStart(e: React.TouchEvent) {
+        if (step !== "confirm") return; // Only allow dismiss on confirm step
+        startY.current = e.touches[0].clientY;
+        setIsDragging(true);
+    }
+
+    function onTouchMove(e: React.TouchEvent) {
+        if (!isDragging) return;
+        const delta = e.touches[0].clientY - startY.current;
+        // Only allow dragging downward (positive delta)
+        setDragY(Math.max(0, delta));
+    }
+
+    function onTouchEnd() {
+        if (!isDragging) return;
+        setIsDragging(false);
+        // If dragged more than 100px down, dismiss
+        if (dragY > 100) {
+            onClose();
+        }
+        setDragY(0);
+    }
+
+    const panelStyle: React.CSSProperties = dragY > 0
+        ? { transform: `translateY(${dragY}px)`, transition: isDragging ? "none" : "transform 0.3s ease" }
+        : {};
+
     return (
         <>
             {/* Overlay */}
@@ -39,7 +74,14 @@ export function PaywallSheet({ isOpen, address, onClose, onPaymentComplete }: Pa
             />
 
             {/* Panel */}
-            <div className={`sheet-panel ${isOpen ? "open" : ""}`}>
+            <div
+                ref={panelRef}
+                className={`sheet-panel ${isOpen ? "open" : ""}`}
+                style={panelStyle}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+            >
                 <div className="sheet-handle" />
                 <div className="sheet-body">
 
