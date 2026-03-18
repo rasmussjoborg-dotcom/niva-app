@@ -183,12 +183,14 @@ body {
         transform: none !important;
     }
 
-    /* Sheet panel: full width, slide up from bottom */
+    /* Sheet panel: match card width on mobile */
     .sheet-panel {
         max-width: 100%;
-        left: 0;
-        right: 0;
+        left: 14px !important;
+        right: 14px !important;
+        width: auto !important;
         transform: translateY(100%);
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     }
 
     .sheet-panel.open {
