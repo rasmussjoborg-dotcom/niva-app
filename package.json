@@ -4,7 +4,10 @@
     "private": true,
     "scripts": {
         "dev": "bun --hot ./index.ts",
-        "build": "bun build ./src/main.tsx --outdir ./dist"
+        "build": "bun build ./src/main.tsx --outdir ./dist",
+        "test": "bun test",
+        "test:watch": "bun test --watch",
+        "typecheck": "bunx tsc --noEmit"
     },
     "dependencies": {
         "@google/genai": "^1.44.0",
