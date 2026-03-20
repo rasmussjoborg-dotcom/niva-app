@@ -17,6 +17,7 @@ Nivå helps users evaluate bostadsrättsföreningar (BRFs) by pasting a broker U
 | Styling | Vanilla CSS with custom properties |
 | AI | Google Gemini API (PDF analysis) |
 | Deployment | Railway (Docker) |
+| Testing | bun:test (built-in) |
 
 ## Project Structure
 
@@ -24,6 +25,10 @@ Nivå helps users evaluate bostadsrättsföreningar (BRFs) by pasting a broker U
 Nivå/
 ├── data/               # SQLite database (niva.db)
 ├── docs/               # Project documentation snapshots
+├── tests/              # Test suite
+│   ├── api.test.ts     # API integration tests
+│   ├── db.test.ts      # Database CRUD tests
+│   └── utils.test.ts   # Utility function tests
 ├── src/
 │   ├── components/     # Reusable UI components
 │   ├── db/
@@ -60,6 +65,54 @@ All queries use **prepared statements** (`db.prepare()`). Foreign keys are enabl
 
 > **CRITICAL: Never modify the database schema (schema.ts) without explicit approval. Only modify query helpers in queries.ts.**
 
+## Testing
+
+### Running Tests
+```bash
+bun test              # Run all tests
+bun test --watch      # Watch mode
+bun test tests/db     # Run only DB tests
+bun run typecheck     # Type check without emitting
+```
+
+### Test Requirements
+- **Every PR must include tests** for new functionality
+- **Run `bun test` before opening a PR** — CI will run them automatically and block merges on failure
+- **Check CI status** on your PR — if tests fail, fix them before marking as ready
+
+### How to Write Tests
+Use `bun:test` (built-in, zero dependencies):
+
+```typescript
+import { describe, test, expect } from "bun:test";
+
+describe("Feature Name", () => {
+  test("should do the expected thing", () => {
+    const result = myFunction(input);
+    expect(result).toBe(expectedOutput);
+  });
+});
+```
+
+### Test Categories
+| File | What it tests | How to extend |
+|------|--------------|---------------|
+| `tests/db.test.ts` | SQLite schema + CRUD | Add tests for new queries |
+| `tests/utils.test.ts` | URL parsing, KALP, transforms | Add tests for new utilities |
+| `tests/api.test.ts` | HTTP API endpoints | Add tests for new routes |
+
+### Testing Patterns
+- **DB tests**: Use in-memory SQLite (`new Database(":memory:")`) — no file I/O needed
+- **API tests**: Server starts on port 3456 with `DB_PATH=":memory:"` — gracefully skip if unavailable
+- **Utility tests**: Pure functions, no mocks needed — just input → output assertions
+
+## CI Pipeline
+GitHub Actions runs on every PR:
+1. `bun run typecheck` — catches type errors
+2. `bun test` — runs all tests
+
+**If CI fails on your PR, you must fix the failing tests before the PR can be reviewed.**
+
 ## API Client
 
 Frontend uses `useApi.ts` — a lightweight typed fetch wrapper. All API calls go through `/api/*` paths.
@@ -93,3 +146,5 @@ Frontend uses `useApi.ts` — a lightweight typed fetch wrapper. All API calls g
 4. **Don't add new npm dependencies** without justification
 5. **Don't break the SPA fallback** in index.ts — all non-API routes must serve index.html
 6. **Don't use TailwindCSS** — the project uses vanilla CSS with custom properties
+7. **Don't skip tests** — every PR needs tests that pass
+8. **Don't merge with failing CI** — fix tests first
