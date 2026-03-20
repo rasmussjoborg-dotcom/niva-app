@@ -302,7 +302,7 @@ export function ObjectTeaserScreen() {
                 <TopBar
                     title={analysis.address}
                     rightAction={
-                        (analysis as any).booli_url ? (
+                        (analysis as any).broker_url ? (
                             <button
                                 onClick={handleRefresh}
                                 disabled={refreshing}
@@ -390,7 +390,7 @@ export function ObjectTeaserScreen() {
                         </div>
                     </div>
 
-                    {/* Price Insight Card — falls back to Booli estimate when no asking price */}
+                    {/* Price Insight Card — falls back to market estimate when no asking price */}
                     {analysis.fair_value && (() => {
                         const hasPrice = analysis.asking_price > 0;
                         const priceToCompare = hasPrice ? analysis.asking_price : 0;
@@ -419,12 +419,12 @@ export function ObjectTeaserScreen() {
                                     }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
                                             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--color-text-muted)", flexShrink: 0 }} />
-                                            <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--color-text-muted)" }}>Boolis värdering</span>
+                                            <span style={{ fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--color-text-muted)" }}>Marknadsvärdering</span>
                                         </div>
                                         <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--color-text-secondary)", letterSpacing: "0.02em" }}>ESTIMAT</span>
                                     </div>
                                     <div style={{ fontSize: "var(--font-size-sm)", color: "var(--color-text-primary)", fontWeight: 500, lineHeight: 1.5, marginBottom: "var(--space-2)" }}>
-                                        Booli värderar denna bostad till <strong>{estimateFormatted}</strong>
+                                        Marknadsvärderingen för denna bostad är <strong>{estimateFormatted}</strong>
                                     </div>
                                     <div style={{ fontSize: "var(--font-size-xs)", color: "var(--color-text-muted)" }}>
                                         Intervall: {lowFormatted} – {highFormatted}

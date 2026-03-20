@@ -58,7 +58,7 @@ export function SplashScreen({ onContinue }: SplashScreenProps) {
                     { title: "Föreningens hälsa", desc: "Vi läser årsredovisningen åt dig" },
                     { title: "Din budget", desc: "Se om kalkylen håller" },
                     { title: "Nivå-betyg", desc: "Sammanvägt betyg på varje bostad" },
-                    { title: "Booli-koppling", desc: "Klistra in en länk, få full analys" },
+                    { title: "Mäklarlänk", desc: "Klistra in en länk, få full analys" },
                 ].map((item, i) => (
                     <div key={i} style={{
                         display: "flex",
