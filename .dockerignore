@@ -6,3 +6,6 @@ data
 .gitignore
 *.md
 .gemini
+niva-app
+niva-app-sdk55-backup
+.agents
