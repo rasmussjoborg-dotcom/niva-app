@@ -20,9 +20,9 @@ RUN bun run build
 # Create data directory for SQLite
 RUN mkdir -p /app/data
 
-# Configurable DB path (override via Railway volume mount)
+# Configurable DB path (Railway volume mounted externally)
 ENV DB_PATH=/app/data/niva.db
-VOLUME /app/data
+# Note: Railway bans VOLUME in Dockerfiles — use Railway Volumes UI instead
 
 # Expose port (Railway sets PORT env var)
 EXPOSE 3002
