@@ -188,7 +188,7 @@ export function DashboardScreen() {
                             <input
                                 ref={searchInputRef}
                                 type="text"
-                                placeholder="t.ex. hemnet.se/bostad/..."
+                                placeholder="Klistra in din mäklarlänk..."
                                 value={searchValue}
                                 onChange={(e) => { setSearchValue(e.target.value); setClipboardHint(null); }}
                                 onFocus={handleSearchFocus}
