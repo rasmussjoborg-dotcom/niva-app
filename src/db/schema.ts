@@ -1,10 +1,13 @@
 import { Database } from "bun:sqlite";
-import { join } from "path";
+import { mkdirSync } from "fs";
+import { dirname } from "path";
 
-const DB_PATH = join(import.meta.dir, "../../data/niva.db");
+const DB_PATH = process.env.DB_PATH || "./data/niva.db";
 
-// Ensure data directory exists
-await Bun.$`mkdir -p ${join(import.meta.dir, "../../data")}`;
+// Ensure data directory exists (skip for in-memory databases)
+if (DB_PATH !== ":memory:") {
+  mkdirSync(dirname(DB_PATH), { recursive: true });
+}
 
 const db = new Database(DB_PATH, { create: true });
 
