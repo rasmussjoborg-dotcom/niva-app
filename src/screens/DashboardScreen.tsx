@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../App";
-import { listAnalyses, scrapeBooliListing, type AnalysisData } from "../hooks/useApi";
+import { listAnalyses, submitPropertyLink, type AnalysisData } from "../hooks/useApi";
 import { TopBar } from "../components/TopBar";
 
 function formatSEK(amount: number): string {
@@ -58,13 +58,13 @@ export function DashboardScreen() {
         return () => clearTimeout(guidanceTimer.current);
     }, []);
 
-    // Paste detection — check clipboard for Booli URLs on search focus
+    // Paste detection — check clipboard for URLs on search focus
     async function handleSearchFocus() {
         setShowGuidance(false);
         clearTimeout(guidanceTimer.current);
         try {
             const text = await navigator.clipboard.readText();
-            if (text && text.includes("booli.se") && !searchValue) {
+            if (text && (text.startsWith("http://") || text.startsWith("https://")) && !searchValue) {
                 setClipboardHint(text.trim());
             }
         } catch { /* clipboard permission denied — ignore */ }
@@ -140,7 +140,7 @@ export function DashboardScreen() {
                         </button>
                     </div>
 
-                    {/* Booli search — primary action */}
+                    {/* Property search — primary action */}
                     <div className="card" style={{
                         marginBottom: "var(--space-6)",
                         background: "white",
@@ -171,7 +171,7 @@ export function DashboardScreen() {
                                     lineHeight: 1.3,
                                     marginTop: 2,
                                 }}>
-                                    Klistra in en Booli-länk
+                                    Klistra in en mäklarlänk
                                 </div>
                             </div>
                         </div>
@@ -188,7 +188,7 @@ export function DashboardScreen() {
                             <input
                                 ref={searchInputRef}
                                 type="text"
-                                placeholder="booli.se/annons/..."
+                                placeholder="t.ex. hemnet.se/bostad/..."
                                 value={searchValue}
                                 onChange={(e) => { setSearchValue(e.target.value); setClipboardHint(null); }}
                                 onFocus={handleSearchFocus}
@@ -211,7 +211,7 @@ export function DashboardScreen() {
                                         setScraping(true);
                                         setSearchError(null);
                                         try {
-                                            const result = await scrapeBooliListing(searchValue);
+                                            const result = await submitPropertyLink(searchValue);
                                             navigate(`/analys/${result.analysis_id}`);
                                         } catch (err: any) {
                                             setSearchError(err.message);
@@ -306,7 +306,7 @@ export function DashboardScreen() {
                             animation: "fadeIn 0.4s ease",
                         }}>
                             <span style={{ fontSize: 16, flexShrink: 0 }}>💡</span>
-                            <span>Hitta en bostad på <strong>Booli.se</strong>, kopiera länken och klistra in den ovan för att starta din analys.</span>
+                            <span>Hitta en bostad hos din mäklare, kopiera länken och klistra in den ovan för att starta din analys.</span>
                         </div>
                     )}
 
@@ -441,7 +441,7 @@ export function DashboardScreen() {
                                 <p style={{ fontWeight: 600, fontSize: "var(--font-size-base)", marginBottom: "var(--space-1)" }}>
                                     Lägg till din första bostad
                                 </p>
-                                <p className="body-sm">Klistra in en Booli-länk ovan och vi sköter resten</p>
+                                <p className="body-sm">Klistra in en mäklarlänk ovan och vi sköter resten</p>
                             </div>
                         ) : (
                             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>

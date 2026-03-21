@@ -149,10 +149,8 @@ export function analyzePdf(propertyId: number, data: { pdf_url?: string; pdf_bas
     });
 }
 
-// ── Booli Scraper API ────────────────────────────────
-
-export function scrapeBooliListing(url: string): Promise<{ analysis_id: number }> {
-    return request("/scrape-booli", {
+export function submitPropertyLink(url: string): Promise<{ analysis_id: number }> {
+    return request("/submit-link", {
         method: "POST",
         body: JSON.stringify({ url }),
     });

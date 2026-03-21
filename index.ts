@@ -5,7 +5,6 @@ import {
     updateUser,
     createProperty,
     getProperty,
-    findPropertyByBooliUrl,
     createAnalysis,
     getAnalysis,
     listAnalysesByUser,
@@ -27,7 +26,6 @@ import {
 } from "./src/db/queries";
 import { calculateKALP } from "./src/utils/kalp";
 import { analyzeBrfPdf, getDemoResult } from "./src/utils/pdfAnalyzer";
-import { fetchBooliListing } from "./src/utils/booliScraper";
 import { findBrokerPdfs } from "./src/utils/brokerScraper";
 import { generateAIQuestions } from "./src/utils/questionGenerator";
 import { generateChatResponse } from "./src/utils/aiChat";
@@ -188,7 +186,6 @@ Bun.serve({
                 try {
                     const body = await parseBody<{
                         address: string;
-                        booli_url?: string;
                         area?: string;
                         asking_price: number;
                         sqm?: number;
@@ -348,69 +345,36 @@ Bun.serve({
     fetch(req) {
         const url = new URL(req.url);
 
-        // ── Scrape Booli listing endpoint ──
-        if (url.pathname === "/api/scrape-booli" && req.method === "POST") {
+        // ── Submit property link (broker URL) ──
+        if (url.pathname === "/api/submit-link" && req.method === "POST") {
             const auth = requireAuth(req);
             if ("error" in auth) return auth.error;
 
             return (async () => {
                 try {
-                    const { url: booliUrl } = await parseBody<{ url: string }>(req);
+                    const { url: brokerUrl } = await parseBody<{ url: string }>(req);
 
-                    if (!booliUrl) return json({ error: "Ange en Booli-länk" }, 400);
+                    if (!brokerUrl) return json({ error: "Ange en mäklarlänk" }, 400);
                     const user_id = auth.user.id;
 
-                    // Scrape the listing
-                    const listing = await fetchBooliListing(booliUrl);
-
-                    // Note: asking_price may be 0 for listings published without a price ("Pris saknas")
-
-                    // Reuse existing property or create new
-                    const existing = listing.booli_url ? findPropertyByBooliUrl(listing.booli_url) : null;
-                    const property = existing ?? createProperty({
-                        booli_url: listing.booli_url,
-                        broker_url: listing.broker_url || undefined,
-                        address: listing.address,
-                        area: listing.area,
-                        asking_price: listing.asking_price,
-                        sqm: listing.sqm ?? undefined,
-                        fee: listing.fee ?? undefined,
-                        rooms: listing.rooms ?? undefined,
-                        built_year: listing.built_year ?? undefined,
-                        fair_value: listing.fair_value ?? undefined,
-                        image_url: listing.image_url ?? undefined,
+                    const property = createProperty({
+                        broker_url: brokerUrl,
+                        address: "Hämtar bostadsdata...",
+                        asking_price: 0,
                     });
 
-                    // If reusing, update data in case listing changed
-                    if (existing) {
-                        updatePropertyData(existing.id, {
-                            broker_url: listing.broker_url || undefined,
-                            address: listing.address,
-                            area: listing.area,
-                            asking_price: listing.asking_price,
-                            sqm: listing.sqm ?? undefined,
-                            fee: listing.fee ?? undefined,
-                            rooms: listing.rooms ?? undefined,
-                            built_year: listing.built_year ?? undefined,
-                            fair_value: listing.fair_value ?? undefined,
-                            image_url: listing.image_url ?? undefined,
-                        });
-                    }
-
-                    // Create analysis record
                     const analysis = createAnalysis({
                         user_id,
                         property_id: property.id,
                     });
 
-                    // ── Auto-pipeline: BRF analysis + KALP (fire-and-forget, don't block response) ──
+                    // ── Auto-pipeline: BRF analysis only (KALP/questions deferred until price is known) ──
                     (async () => {
                         try {
-                            // 1. Run BRF analysis
                             let brfResult;
                             try {
-                                console.log("AUTO-PIPELINE TRIGGERED. Broker URL:", property.broker_url);
-                                const docs = await findBrokerPdfs(property.broker_url || "");
+                                console.log("AUTO-PIPELINE TRIGGERED. Broker URL:", brokerUrl);
+                                const docs = await findBrokerPdfs(brokerUrl);
                                 console.log("Documents found in auto-pipeline:", docs.map(d => d.type));
                                 const annualReport = docs.find(d => d.type === "annual_report");
                                 if (annualReport) {
@@ -418,7 +382,7 @@ Bun.serve({
                                     brfResult = await analyzeBrfPdf(annualReport.url);
                                 } else {
                                     console.log("No annual_report found, falling back to demo");
-                                    brfResult = getDemoResult(); // Fallback if no PDF found
+                                    brfResult = getDemoResult();
                                 }
                             } catch (e) {
                                 console.error("Error analyzing PDF, falling back to demo data:", e);
@@ -435,43 +399,6 @@ Bun.serve({
                                 brf_savings_per_sqm: savingsPerSqm,
                                 brf_analysis_json: JSON.stringify(brfResult),
                             });
-
-                            // 2. Compute KALP grade
-                            const user = getUser(user_id);
-                            if (user) {
-                                const householdInfo = getHouseholdInfo(user_id);
-                                const hasPartner = householdInfo?.partner != null;
-                                const monthlyIncome = hasPartner ? householdInfo!.combined_income : (user.income ?? 35_000);
-                                const debts = hasPartner ? householdInfo!.combined_debts : (user.debts ?? 0);
-                                const kalpResult = calculateKALP({
-                                    monthlyIncome,
-                                    bidPrice: listing.asking_price,
-                                    ownFinancing: Math.min(user.savings ?? 500_000, listing.asking_price),
-                                    interestRate: 0.04,
-                                    brfFee: listing.fee ?? 4_500,
-                                    existingDebts: debts,
-                                    householdType: hasPartner ? "together" : (user.household_type ?? "solo"),
-                                    grossAnnualIncome: monthlyIncome * 14,
-                                });
-
-                                updateAnalysisGrade(analysis.id, kalpResult.grade, Math.round(kalpResult.margin));
-                            }
-
-                            // 3. Generate AI questions
-                            const questions = await generateAIQuestions({
-                                address: listing.address,
-                                area: listing.area,
-                                asking_price: listing.asking_price,
-                                sqm: listing.sqm,
-                                rooms: listing.rooms,
-                                fee: listing.fee,
-                                built_year: listing.built_year,
-                                fair_value: listing.fair_value,
-                                brf_loan_per_sqm: loanPerSqm,
-                                brf_savings_per_sqm: savingsPerSqm,
-                                brf_summary: brfResult.summary,
-                            });
-                            updateAnalysisQuestions(analysis.id, JSON.stringify(questions));
                         } catch (err) {
                             console.error("Auto-pipeline error:", err);
                         }
@@ -503,7 +430,7 @@ Bun.serve({
             }
         }
 
-        // ── Refresh analysis endpoint (re-scrape + re-analyze) ──
+        // ── Refresh analysis endpoint (re-analyze) ──
         const refreshMatch = url.pathname.match(/^\/api\/analyses\/(\d+)\/refresh$/);
         if (refreshMatch && req.method === "POST") {
             const auth = requireAuth(req);
@@ -516,30 +443,14 @@ Bun.serve({
                     if (!analysis) return json({ error: "Analysis not found" }, 404);
                     if (analysis.user_id !== auth.user.id) return json({ error: "Forbidden" }, 403);
 
-                    const booliUrl = analysis.booli_url;
-                    if (!booliUrl) return json({ error: "Ingen Booli-länk att uppdatera" }, 400);
-
-                    // Re-scrape
-                    const listing = await fetchBooliListing(booliUrl);
-
-                    // Update property data
-                    updatePropertyData(analysis.property_id, {
-                        address: listing.address,
-                        area: listing.area,
-                        asking_price: listing.asking_price,
-                        sqm: listing.sqm ?? undefined,
-                        fee: listing.fee ?? undefined,
-                        rooms: listing.rooms ?? undefined,
-                        built_year: listing.built_year ?? undefined,
-                        fair_value: listing.fair_value ?? undefined,
-                        image_url: listing.image_url ?? undefined,
-                    });
+                    const brokerUrl = analysis.broker_url;
+                    if (!brokerUrl) return json({ error: "Ingen mäklarlänk att uppdatera" }, 400);
 
                     // Re-run BRF analysis
                     let brfResult;
                     try {
-                        console.log("REFRESH TRIGGERED for analysis", analysisId, "Broker URL:", listing.broker_url || analysis.broker_url);
-                        const docs = await findBrokerPdfs(listing.broker_url || analysis.broker_url || "");
+                        console.log("REFRESH TRIGGERED for analysis", analysisId, "Broker URL:", brokerUrl);
+                        const docs = await findBrokerPdfs(brokerUrl);
                         console.log("Documents found:", docs.map(d => d.type));
                         const annualReport = docs.find(d => d.type === "annual_report");
                         if (annualReport) {
@@ -573,10 +484,10 @@ Bun.serve({
                         const debts = hasPartner ? householdInfo!.combined_debts : (user.debts ?? 0);
                         const kalpResult = calculateKALP({
                             monthlyIncome,
-                            bidPrice: listing.asking_price,
-                            ownFinancing: Math.min(user.savings ?? 500_000, listing.asking_price),
+                            bidPrice: analysis.asking_price,
+                            ownFinancing: Math.min(user.savings ?? 500_000, analysis.asking_price),
                             interestRate: 0.04,
-                            brfFee: listing.fee ?? 4_500,
+                            brfFee: analysis.fee ?? 4_500,
                             existingDebts: debts,
                             householdType: hasPartner ? "together" : (user.household_type ?? "solo"),
                             grossAnnualIncome: monthlyIncome * 14,
@@ -586,14 +497,14 @@ Bun.serve({
 
                     // Re-generate questions
                     const questions = await generateAIQuestions({
-                        address: listing.address,
-                        area: listing.area,
-                        asking_price: listing.asking_price,
-                        sqm: listing.sqm,
-                        rooms: listing.rooms,
-                        fee: listing.fee,
-                        built_year: listing.built_year,
-                        fair_value: listing.fair_value,
+                        address: analysis.address,
+                        area: analysis.area,
+                        asking_price: analysis.asking_price,
+                        sqm: analysis.sqm,
+                        rooms: analysis.rooms,
+                        fee: analysis.fee,
+                        built_year: analysis.built_year,
+                        fair_value: analysis.fair_value,
                         brf_loan_per_sqm: loanPerSqm,
                         brf_savings_per_sqm: savingsPerSqm,
                         brf_summary: brfResult.summary,

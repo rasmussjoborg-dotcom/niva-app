@@ -142,7 +142,6 @@ const insertProperty = db.prepare(`
 `);
 
 const selectProperty = db.prepare(`SELECT * FROM properties WHERE id = ?`);
-const selectPropertyByBooliUrl = db.prepare(`SELECT * FROM properties WHERE booli_url = ?`);
 
 export function createProperty(data: {
     booli_url?: string;
@@ -177,10 +176,6 @@ export function createProperty(data: {
         $image_url: data.image_url ?? null,
     });
     return selectProperty.get(result.lastInsertRowid) as Property;
-}
-
-export function findPropertyByBooliUrl(url: string): Property | null {
-    return (selectPropertyByBooliUrl.get(url) as Property) || null;
 }
 
 export function getProperty(id: number): Property | null {
