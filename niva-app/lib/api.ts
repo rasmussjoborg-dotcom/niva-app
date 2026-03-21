@@ -141,7 +141,7 @@ export const getHousehold = (id: number) =>
 
 // Properties & Analysis
 export const resolveProperty = (url: string) =>
-  apiFetch<AnalysisData>("/resolve-property", { method: "POST", body: JSON.stringify({ url }) });
+  apiFetch<{ analysis_id: number; property: any; analysis: AnalysisData }>("/submit-link", { method: "POST", body: JSON.stringify({ url }) });
 
 export const getAnalyses = () =>
   apiFetch<AnalysisData[]>("/analyses");
@@ -164,12 +164,13 @@ export const analyzePdf = (propertyId: number) =>
 
 // Chat
 export const chatWithAI = (propertyId: number, message: string) =>
-  apiFetch<{ response: string }>(`/properties/${propertyId}/chat`, {
+  apiFetch<{ message: string }>(`/properties/${propertyId}/chat`, {
     method: "POST",
-    body: JSON.stringify({ message }),
-  });
+    body: JSON.stringify({ messages: [{ role: "user", content: message }] }),
+  }).then((res) => ({ response: res.message }));
 
 // KALP Calculator
+// Maps mobile-friendly params to the backend's expected format
 export const calculateKALP = (data: {
   price: number;
   monthly_fee: number;
@@ -177,7 +178,18 @@ export const calculateKALP = (data: {
   savings: number;
   other_debts?: number;
   interest_rate?: number;
-}) => apiFetch<KALPResult>("/calculate", { method: "POST", body: JSON.stringify(data) });
+}) => apiFetch<KALPResult>("/calculate", {
+  method: "POST",
+  body: JSON.stringify({
+    monthlyIncome: data.income,
+    bidPrice: data.price,
+    ownFinancing: data.savings,
+    interestRate: (data.interest_rate ?? 4) / 100,
+    brfFee: data.monthly_fee,
+    existingDebts: data.other_debts ?? 0,
+    householdType: "solo",
+  }),
+});
 
 // Bids
 export const createBid = (analysisId: number, amount: number) =>

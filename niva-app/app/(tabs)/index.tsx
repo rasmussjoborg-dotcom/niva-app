@@ -82,7 +82,7 @@ export default function HomeScreen() {
       const result = await resolveProperty(searchValue.trim());
       setSearchValue("");
       fetchAnalyses();
-      router.push(`/analysis/${result.id}`);
+      router.push(`/analysis/${result.analysis_id}`);
     } catch (err: any) {
       setSearchError(err.message || "Kunde inte analysera länken");
     } finally {

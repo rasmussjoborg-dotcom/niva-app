@@ -45,6 +45,12 @@ function setSessionCookie(userId: number): string {
 }
 
 function getSessionUserId(req: Request): number | null {
+    // 1. Check Bearer token first (mobile app)
+    const authHeader = req.headers.get("authorization") || "";
+    const bearerMatch = authHeader.match(/^Bearer\s+(\d+)$/);
+    if (bearerMatch) return parseInt(bearerMatch[1]);
+
+    // 2. Fall back to session cookie (web app)
     const cookie = req.headers.get("cookie") || "";
     const match = cookie.match(/niva_session=(\d+)/);
     return match ? parseInt(match[1]) : null;
