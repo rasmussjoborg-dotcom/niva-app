@@ -1,5 +1,8 @@
-import { describe, test, expect, beforeEach } from "bun:test";
+import { describe, test, expect, beforeEach, afterEach } from "bun:test";
 import { Database } from "bun:sqlite";
+import { mkdirSync, existsSync, rmSync } from "fs";
+import { dirname, join } from "path";
+import { tmpdir } from "os";
 
 // ============================================================
 // Database Layer Tests
@@ -200,5 +203,43 @@ describe("Households", () => {
 
     const hh = db.prepare("SELECT * FROM households WHERE id = ?").get(1) as any;
     expect(hh.shared_loan_promise).toBe(6000000);
+  });
+});
+
+// ---- DB_PATH configuration ----
+
+describe("DB_PATH configuration", () => {
+  const TMP_DB_PATH = join(tmpdir(), "niva-test-db", "test.db");
+
+  afterEach(() => {
+    if (existsSync(join(tmpdir(), "niva-test-db"))) {
+      rmSync(join(tmpdir(), "niva-test-db"), { recursive: true, force: true });
+    }
+  });
+
+  test("in-memory database works", () => {
+    const memDb = new Database(":memory:");
+    memDb.exec("CREATE TABLE test (id INTEGER PRIMARY KEY)");
+    const result = memDb.prepare("INSERT INTO test VALUES (1)").run();
+    expect(result.lastInsertRowid).toBe(1);
+    memDb.close();
+  });
+
+  test("DB_PATH env variable controls file location", () => {
+    mkdirSync(dirname(TMP_DB_PATH), { recursive: true });
+    const fileDb = new Database(TMP_DB_PATH, { create: true });
+    fileDb.exec("CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY)");
+    fileDb.prepare("INSERT INTO test VALUES (1)").run();
+    fileDb.close();
+    expect(existsSync(TMP_DB_PATH)).toBe(true);
+  });
+
+  test("mkdirSync creates missing directories before DB creation", () => {
+    const nestedPath = join(tmpdir(), "niva-test-db", "nested", "deep", "test.db");
+    mkdirSync(dirname(nestedPath), { recursive: true });
+    expect(existsSync(dirname(nestedPath))).toBe(true);
+    const nestedDb = new Database(nestedPath, { create: true });
+    nestedDb.close();
+    expect(existsSync(nestedPath)).toBe(true);
   });
 });
